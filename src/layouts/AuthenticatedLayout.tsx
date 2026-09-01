@@ -1,13 +1,36 @@
 import { useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
+import type { EmployeeProfile } from '../types/auth'
 
-const navigation = [
+interface NavigationItem {
+  to: string
+  label: string
+  end: boolean
+  allowedProfiles?: EmployeeProfile[]
+}
+
+const navigation: NavigationItem[] = [
   { to: '/', label: 'Visão geral', end: true },
   { to: '/clientes', label: 'Clientes', end: false },
   { to: '/ordens', label: 'Ordens de serviço', end: false },
-  { to: '/balancos', label: 'Balanços', end: false },
+  {
+    to: '/balancos',
+    label: 'Balanços',
+    end: false,
+    allowedProfiles: ['empresario'],
+  },
+  {
+    to: '/funcionarios',
+    label: 'Funcionários',
+    end: false,
+    allowedProfiles: ['empresario'],
+  },
 ]
+
+function getProfileLabel(profile?: EmployeeProfile): string {
+  return profile === 'empresario' ? 'Empresário' : 'Funcionário'
+}
 
 export function AuthenticatedLayout() {
   const { employee, logout } = useAuth()
@@ -15,8 +38,14 @@ export function AuthenticatedLayout() {
   const navigate = useNavigate()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
+  const visibleNavigation = navigation.filter(
+    (item) =>
+      !item.allowedProfiles ||
+      (employee ? item.allowedProfiles.includes(employee.perfil) : false),
+  )
+
   const currentPage =
-    navigation.find((item) =>
+    visibleNavigation.find((item) =>
       item.end
         ? location.pathname === item.to
         : location.pathname.startsWith(item.to),
@@ -69,7 +98,7 @@ export function AuthenticatedLayout() {
 
         <nav className="sidebar-nav" aria-label="Navegação principal">
           <p className="sidebar-section-label">Menu principal</p>
-          {navigation.map((item, index) => (
+          {visibleNavigation.map((item, index) => (
             <NavLink
               key={item.to}
               to={item.to}
@@ -94,6 +123,7 @@ export function AuthenticatedLayout() {
           <div className="employee-details">
             <strong>{employee?.nome}</strong>
             <span>{employee?.email}</span>
+            <small>{getProfileLabel(employee?.perfil)}</small>
           </div>
           <button
             className="logout-button"

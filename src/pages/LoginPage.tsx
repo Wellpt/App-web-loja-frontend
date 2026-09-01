@@ -68,7 +68,7 @@ export function LoginPage() {
       <section className="login-panel">
         <div className="login-card">
           <div className="login-heading">
-            <p className="eyebrow">{'\u00c1rea do funcion\u00e1rio'}</p>
+            <p className="eyebrow">{'\u00c1rea de acesso'}</p>
             <h2>Entre na sua conta</h2>
             <p>Informe suas credenciais para acessar o sistema.</p>
           </div>
