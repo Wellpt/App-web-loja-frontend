@@ -71,4 +71,13 @@ A US02 adiciona a navegação autenticada:
 - menu recolhível para dispositivos móveis
 - estrutura inicial da visão geral
 
+A US03 implementa o fluxo de clientes:
+
+- listagem integrada à API
+- estados de carregamento, erro e lista vazia
+- cadastro de cliente em formulário modal
+- validação e formatação de telefone e CPF/CNPJ
+- tratamento de documento duplicado
+- tabela responsiva para dispositivos móveis
+
 Testes automatizados não fazem parte desta fase do projeto.
