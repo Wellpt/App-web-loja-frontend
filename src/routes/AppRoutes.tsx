@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { ProtectedRoute } from '../components/ProtectedRoute'
 import { AuthenticatedLayout } from '../layouts/AuthenticatedLayout'
 import { ComingSoonPage } from '../pages/ComingSoonPage'
+import { CustomersPage } from '../pages/CustomersPage'
 import { DashboardPage } from '../pages/DashboardPage'
 import { LoginPage } from '../pages/LoginPage'
 
@@ -16,7 +17,7 @@ export function AppRoutes() {
             <Route path="/" element={<DashboardPage />} />
             <Route
               path="/clientes"
-              element={<ComingSoonPage title="Clientes" />}
+              element={<CustomersPage />}
             />
             <Route
               path="/ordens"
