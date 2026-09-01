@@ -1,7 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { ProtectedRoute } from '../components/ProtectedRoute'
 import { AuthenticatedLayout } from '../layouts/AuthenticatedLayout'
-import { ComingSoonPage } from '../pages/ComingSoonPage'
+import { BalancesPage } from '../pages/BalancesPage'
 import { CustomersPage } from '../pages/CustomersPage'
 import { DashboardPage } from '../pages/DashboardPage'
 import { LoginPage } from '../pages/LoginPage'
@@ -21,10 +21,7 @@ export function AppRoutes() {
               element={<CustomersPage />}
             />
             <Route path="/ordens" element={<OrdersPage />} />
-            <Route
-              path="/balancos"
-              element={<ComingSoonPage title="Balanços" />}
-            />
+            <Route path="/balancos" element={<BalancesPage />} />
           </Route>
         </Route>
 
