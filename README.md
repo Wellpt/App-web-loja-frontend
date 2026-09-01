@@ -106,4 +106,13 @@ A US06 adiciona a edição de clientes:
 - validação para impedir envio sem alterações
 - atualização e reordenação imediata da lista
 
+A US07 adiciona perfis de acesso e gestão da equipe:
+
+- autenticação com os perfis funcionário e empresário
+- menu e rotas protegidos conforme as permissões
+- dashboard sem dados financeiros para funcionários
+- cadastro de funcionário exclusivo para empresários
+- perfil funcionário atribuído automaticamente
+- tratamento das mensagens de erro da API
+
 Testes automatizados não fazem parte desta fase do projeto.

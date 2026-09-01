@@ -1,7 +1,10 @@
+export type EmployeeProfile = 'funcionario' | 'empresario'
+
 export interface Employee {
   id: number
   nome: string
   email: string
+  perfil: EmployeeProfile
 }
 
 export interface LoginCredentials {

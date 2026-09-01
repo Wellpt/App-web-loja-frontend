@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getBalances } from '../api/balances'
+import { getCustomers } from '../api/customers'
 import { ApiError } from '../api/http'
 import { getServiceOrders } from '../api/serviceOrders'
 import { useAuth } from '../hooks/useAuth'
@@ -9,50 +10,88 @@ import { formatCurrency } from '../utils/formatters'
 
 type LoadState = 'loading' | 'success' | 'error'
 
+interface DashboardSnapshot {
+  balances: BalanceSummary | null
+  customerCount: number
+  openOrderCount: number
+  completedOrderCount: number
+  totalOrderCount: number
+}
+
 function getDashboardErrorMessage(requestError: unknown): string {
   return requestError instanceof ApiError
     ? requestError.message
     : 'Não foi possível carregar os indicadores. Tente novamente.'
 }
 
+function getOrderCounts(
+  serviceOrders: Awaited<ReturnType<typeof getServiceOrders>>,
+) {
+  return {
+    openOrderCount: serviceOrders.filter((order) => order.status === 'aberta')
+      .length,
+    completedOrderCount: serviceOrders.filter(
+      (order) => order.status === 'concluida',
+    ).length,
+    totalOrderCount: serviceOrders.length,
+  }
+}
+
+async function getDashboardSnapshot(
+  isOwner: boolean,
+  signal?: AbortSignal,
+): Promise<DashboardSnapshot> {
+  if (isOwner) {
+    const [balances, serviceOrders] = await Promise.all([
+      getBalances(signal),
+      getServiceOrders(signal),
+    ])
+
+    return {
+      balances,
+      customerCount: 0,
+      ...getOrderCounts(serviceOrders),
+    }
+  }
+
+  const [customers, serviceOrders] = await Promise.all([
+    getCustomers(signal),
+    getServiceOrders(signal),
+  ])
+
+  return {
+    balances: null,
+    customerCount: customers.length,
+    ...getOrderCounts(serviceOrders),
+  }
+}
+
 export function DashboardPage() {
   const { employee } = useAuth()
   const firstName = employee?.nome.split(' ')[0]
-  const [balances, setBalances] = useState<BalanceSummary | null>(null)
-  const [openOrderCount, setOpenOrderCount] = useState(0)
+  const isOwner = employee?.perfil === 'empresario'
+  const [snapshot, setSnapshot] = useState<DashboardSnapshot | null>(null)
   const [loadState, setLoadState] = useState<LoadState>('loading')
   const [loadError, setLoadError] = useState<string | null>(null)
 
   const loadDashboard = useCallback(async () => {
     try {
-      const [summary, serviceOrders] = await Promise.all([
-        getBalances(),
-        getServiceOrders(),
-      ])
-      setBalances(summary)
-      setOpenOrderCount(
-        serviceOrders.filter((order) => order.status === 'aberta').length,
-      )
+      const dashboardSnapshot = await getDashboardSnapshot(isOwner)
+      setSnapshot(dashboardSnapshot)
       setLoadState('success')
     } catch (requestError) {
       setLoadError(getDashboardErrorMessage(requestError))
       setLoadState('error')
     }
-  }, [])
+  }, [isOwner])
 
   useEffect(() => {
     const controller = new AbortController()
 
-    Promise.all([
-      getBalances(controller.signal),
-      getServiceOrders(controller.signal),
-    ])
-      .then(([summary, serviceOrders]) => {
+    getDashboardSnapshot(isOwner, controller.signal)
+      .then((dashboardSnapshot) => {
         if (!controller.signal.aborted) {
-          setBalances(summary)
-          setOpenOrderCount(
-            serviceOrders.filter((order) => order.status === 'aberta').length,
-          )
+          setSnapshot(dashboardSnapshot)
           setLoadState('success')
         }
       })
@@ -64,7 +103,7 @@ export function DashboardPage() {
       })
 
     return () => controller.abort()
-  }, [])
+  }, [isOwner])
 
   function handleRetry() {
     setLoadState('loading')
@@ -72,28 +111,74 @@ export function DashboardPage() {
     void loadDashboard()
   }
 
-  const metrics = [
+  const ownerMetrics = [
     {
       label: 'Recebido hoje',
-      value: balances ? formatCurrency(balances.diario.valor_total) : '—',
+      value: snapshot?.balances
+        ? formatCurrency(snapshot.balances.diario.valor_total)
+        : '—',
       note: 'Balanço diário',
     },
     {
       label: 'Esta semana',
-      value: balances ? formatCurrency(balances.semanal.valor_total) : '—',
+      value: snapshot?.balances
+        ? formatCurrency(snapshot.balances.semanal.valor_total)
+        : '—',
       note: 'Desde segunda-feira',
     },
     {
       label: 'Este mês',
-      value: balances ? formatCurrency(balances.mensal.valor_total) : '—',
+      value: snapshot?.balances
+        ? formatCurrency(snapshot.balances.mensal.valor_total)
+        : '—',
       note: 'Desde o primeiro dia',
     },
     {
       label: 'Ordens abertas',
-      value: loadState === 'success' ? String(openOrderCount) : '—',
+      value:
+        loadState === 'success' && snapshot
+          ? String(snapshot.openOrderCount)
+          : '—',
       note: 'Serviços em andamento',
     },
   ]
+
+  const employeeMetrics = [
+    {
+      label: 'Clientes cadastrados',
+      value:
+        loadState === 'success' && snapshot
+          ? String(snapshot.customerCount)
+          : '—',
+      note: 'Base de clientes',
+    },
+    {
+      label: 'Ordens abertas',
+      value:
+        loadState === 'success' && snapshot
+          ? String(snapshot.openOrderCount)
+          : '—',
+      note: 'Serviços em andamento',
+    },
+    {
+      label: 'Ordens concluídas',
+      value:
+        loadState === 'success' && snapshot
+          ? String(snapshot.completedOrderCount)
+          : '—',
+      note: 'Serviços finalizados',
+    },
+    {
+      label: 'Total de ordens',
+      value:
+        loadState === 'success' && snapshot
+          ? String(snapshot.totalOrderCount)
+          : '—',
+      note: 'Histórico operacional',
+    },
+  ]
+
+  const metrics = isOwner ? ownerMetrics : employeeMetrics
 
   return (
     <section className="dashboard-page">
@@ -142,12 +227,17 @@ export function DashboardPage() {
         <div>
           <p className="eyebrow">Atalhos</p>
           <h3>Continue de onde precisa</h3>
-          <p>Acesse rapidamente os cadastros, atendimentos e balanços.</p>
+          <p>
+            {isOwner
+              ? 'Acesse rapidamente cadastros, atendimentos e gestão.'
+              : 'Acesse rapidamente clientes e atendimentos.'}
+          </p>
         </div>
         <div className="quick-links">
           <Link to="/clientes">Ver clientes</Link>
           <Link to="/ordens">Ver ordens</Link>
-          <Link to="/balancos">Ver balanços</Link>
+          {isOwner && <Link to="/balancos">Ver balanços</Link>}
+          {isOwner && <Link to="/funcionarios">Cadastrar funcionário</Link>}
         </div>
       </section>
     </section>
