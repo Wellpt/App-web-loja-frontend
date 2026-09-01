@@ -2025,3 +2025,52 @@ a {
     width: 100%;
   }
 }
+
+.customer-action-cell {
+  text-align: right !important;
+}
+
+.edit-customer-button {
+  min-height: 38px;
+  border: 1px solid #cddfd4;
+  border-radius: 9px;
+  padding: 0 14px;
+  color: var(--green-800);
+  background: var(--green-50);
+  font-size: 0.72rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.edit-customer-button:hover {
+  border-color: var(--green-600);
+  background: #e6f3ea;
+}
+
+.form-field input.readonly-input {
+  color: #6f7b74;
+  background: #f0f3f1;
+  cursor: not-allowed;
+}
+
+.field-help {
+  margin-top: 6px;
+  color: #87928b;
+  font-size: 0.68rem;
+  line-height: 1.4;
+}
+
+.edit-customer-button:focus-visible {
+  outline: 3px solid rgb(47 118 85 / 30%);
+  outline-offset: 3px;
+}
+
+@media (max-width: 760px) {
+  .customer-action-cell {
+    padding-top: 13px !important;
+  }
+
+  .edit-customer-button {
+    width: 100%;
+  }
+}

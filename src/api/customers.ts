@@ -1,4 +1,8 @@
-import type { CreateCustomerInput, Customer } from '../types/customer'
+import type {
+  CreateCustomerInput,
+  Customer,
+  UpdateCustomerInput,
+} from '../types/customer'
 import { apiRequest } from './http'
 
 interface CustomerListResponse {
@@ -24,6 +28,21 @@ export async function createCustomer(
     method: 'POST',
     body: JSON.stringify(input),
   })
+
+  return response.cliente
+}
+
+export async function updateCustomer(
+  customerId: number,
+  input: UpdateCustomerInput,
+): Promise<Customer> {
+  const response = await apiRequest<CustomerResponse>(
+    '/customers/' + customerId,
+    {
+      method: 'PATCH',
+      body: JSON.stringify(input),
+    },
+  )
 
   return response.cliente
 }

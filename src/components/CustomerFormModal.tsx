@@ -1,24 +1,31 @@
 import { useEffect, useState, type FormEvent, type MouseEvent } from 'react'
-import { createCustomer } from '../api/customers'
+import { createCustomer, updateCustomer } from '../api/customers'
 import { ApiError } from '../api/http'
-import type { Customer } from '../types/customer'
+import type { Customer, UpdateCustomerInput } from '../types/customer'
 import { digitsOnly, formatDocument, formatPhone } from '../utils/formatters'
 
 interface CustomerFormModalProps {
+  customer?: Customer
   onClose: () => void
-  onCreated: (customer: Customer) => void
+  onSaved: (customer: Customer) => void
 }
 
 export function CustomerFormModal({
+  customer,
   onClose,
-  onCreated,
+  onSaved,
 }: CustomerFormModalProps) {
-  const [name, setName] = useState('')
-  const [phone, setPhone] = useState('')
-  const [email, setEmail] = useState('')
-  const [documentValue, setDocumentValue] = useState('')
+  const [name, setName] = useState(customer?.nome ?? '')
+  const [phone, setPhone] = useState(
+    customer ? formatPhone(customer.telefone) : '',
+  )
+  const [email, setEmail] = useState(customer?.email ?? '')
+  const [documentValue, setDocumentValue] = useState(
+    customer ? formatDocument(customer.documento) : '',
+  )
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const isEditing = customer !== undefined
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow
@@ -50,6 +57,8 @@ export function CustomerFormModal({
 
     const phoneDigits = digitsOnly(phone)
     const documentDigits = digitsOnly(documentValue)
+    const normalizedName = name.trim()
+    const normalizedEmail = email.trim()
 
     if (phoneDigits.length !== 10 && phoneDigits.length !== 11) {
       setError('Informe um telefone com DDD válido.')
@@ -64,19 +73,48 @@ export function CustomerFormModal({
     setIsSubmitting(true)
 
     try {
-      const customer = await createCustomer({
-        nome: name.trim(),
-        telefone: phone,
-        email: email.trim(),
-        documento: documentValue,
-      })
-      onCreated(customer)
+      let savedCustomer: Customer
+
+      if (customer) {
+        const updates: UpdateCustomerInput = {}
+
+        if (normalizedName !== customer.nome) {
+          updates.nome = normalizedName
+        }
+
+        if (phoneDigits !== digitsOnly(customer.telefone)) {
+          updates.telefone = phoneDigits
+        }
+
+        if (normalizedEmail !== customer.email) {
+          updates.email = normalizedEmail
+        }
+
+        if (Object.keys(updates).length === 0) {
+          setError('Altere ao menos um campo antes de salvar.')
+          setIsSubmitting(false)
+          return
+        }
+
+        savedCustomer = await updateCustomer(customer.id, updates)
+      } else {
+        savedCustomer = await createCustomer({
+          nome: normalizedName,
+          telefone: phone,
+          email: normalizedEmail,
+          documento: documentValue,
+        })
+      }
+
+      onSaved(savedCustomer)
       onClose()
     } catch (requestError) {
       setError(
         requestError instanceof ApiError
           ? requestError.message
-          : 'Não foi possível cadastrar o cliente. Tente novamente.',
+          : isEditing
+            ? 'Não foi possível atualizar o cliente. Tente novamente.'
+            : 'Não foi possível cadastrar o cliente. Tente novamente.',
       )
     } finally {
       setIsSubmitting(false)
@@ -93,8 +131,12 @@ export function CustomerFormModal({
       >
         <div className="modal-header">
           <div>
-            <p className="eyebrow">Novo cadastro</p>
-            <h2 id="customer-modal-title">Novo cliente</h2>
+            <p className="eyebrow">
+              {isEditing ? 'Atualizar cadastro' : 'Novo cadastro'}
+            </p>
+            <h2 id="customer-modal-title">
+              {isEditing ? 'Editar cliente' : 'Novo cliente'}
+            </h2>
           </div>
           <button
             className="modal-close"
@@ -145,8 +187,18 @@ export function CustomerFormModal({
               placeholder="000.000.000-00"
               inputMode="numeric"
               disabled={isSubmitting}
+              readOnly={isEditing}
+              className={isEditing ? 'readonly-input' : undefined}
+              aria-describedby={
+                isEditing ? 'customer-document-help' : undefined
+              }
               required
             />
+            {isEditing && (
+              <span className="field-help" id="customer-document-help">
+                O CPF/CNPJ não pode ser alterado.
+              </span>
+            )}
           </div>
 
           <div className="form-field form-field-wide">
@@ -183,7 +235,13 @@ export function CustomerFormModal({
               type="submit"
               disabled={isSubmitting}
             >
-              {isSubmitting ? 'Cadastrando...' : 'Cadastrar cliente'}
+              {isSubmitting
+                ? isEditing
+                  ? 'Salvando...'
+                  : 'Cadastrando...'
+                : isEditing
+                  ? 'Salvar alterações'
+                  : 'Cadastrar cliente'}
             </button>
           </div>
         </form>
