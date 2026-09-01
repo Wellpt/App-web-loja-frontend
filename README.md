@@ -80,4 +80,13 @@ A US03 implementa o fluxo de clientes:
 - tratamento de documento duplicado
 - tabela responsiva para dispositivos móveis
 
+A US04 implementa o fluxo de ordens de serviço:
+
+- listagem por status, com ordens abertas e concluídas
+- criação de ordem vinculada a um cliente
+- conclusão definitiva com valor e forma de pagamento
+- atualização imediata da interface após cada operação
+- estados de carregamento, erro e lista vazia
+- tabela responsiva para dispositivos móveis
+
 Testes automatizados não fazem parte desta fase do projeto.

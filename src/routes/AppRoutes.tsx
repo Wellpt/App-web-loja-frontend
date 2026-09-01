@@ -5,6 +5,7 @@ import { ComingSoonPage } from '../pages/ComingSoonPage'
 import { CustomersPage } from '../pages/CustomersPage'
 import { DashboardPage } from '../pages/DashboardPage'
 import { LoginPage } from '../pages/LoginPage'
+import { OrdersPage } from '../pages/OrdersPage'
 
 export function AppRoutes() {
   return (
@@ -19,10 +20,7 @@ export function AppRoutes() {
               path="/clientes"
               element={<CustomersPage />}
             />
-            <Route
-              path="/ordens"
-              element={<ComingSoonPage title="Ordens de serviço" />}
-            />
+            <Route path="/ordens" element={<OrdersPage />} />
             <Route
               path="/balancos"
               element={<ComingSoonPage title="Balanços" />}
