@@ -98,4 +98,12 @@ A US05 implementa os balanços e conclui a visão geral:
 - estados de carregamento e recuperação de erro
 - cartões responsivos para dispositivos móveis
 
+A US06 adiciona a edição de clientes:
+
+- alteração de nome, telefone e e-mail
+- envio somente dos campos modificados
+- CPF/CNPJ exibido como dado imutável
+- validação para impedir envio sem alterações
+- atualização e reordenação imediata da lista
+
 Testes automatizados não fazem parte desta fase do projeto.

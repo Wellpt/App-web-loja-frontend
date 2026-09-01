@@ -12,3 +12,9 @@ export interface CreateCustomerInput {
   email: string
   documento: string
 }
+
+export interface UpdateCustomerInput {
+  nome?: string
+  telefone?: string
+  email?: string
+}

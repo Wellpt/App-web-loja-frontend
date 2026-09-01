@@ -19,6 +19,7 @@ export function CustomersPage() {
   const [loadError, setLoadError] = useState<string | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
   const [isFormOpen, setIsFormOpen] = useState(false)
+  const [customerToEdit, setCustomerToEdit] = useState<Customer | null>(null)
 
   const loadCustomers = useCallback(async (signal?: AbortSignal) => {
     try {
@@ -62,6 +63,10 @@ export function CustomersPage() {
     setIsFormOpen(false)
   }, [])
 
+  const closeEditForm = useCallback(() => {
+    setCustomerToEdit(null)
+  }, [])
+
   function handleRetry() {
     setLoadState('loading')
     setLoadError(null)
@@ -76,6 +81,19 @@ export function CustomersPage() {
     )
     setLoadState('success')
     setNotice('Cliente cadastrado com sucesso.')
+  }, [])
+
+  const handleCustomerUpdated = useCallback((customer: Customer) => {
+    setCustomers((currentCustomers) =>
+      currentCustomers
+        .map((currentCustomer) =>
+          currentCustomer.id === customer.id ? customer : currentCustomer,
+        )
+        .sort((first, second) =>
+          first.nome.localeCompare(second.nome, 'pt-BR'),
+        ),
+    )
+    setNotice('Cliente atualizado com sucesso.')
   }, [])
 
   const customerCountLabel =
@@ -173,6 +191,7 @@ export function CustomersPage() {
                   <th>Telefone</th>
                   <th>E-mail</th>
                   <th>CPF/CNPJ</th>
+                  <th>Ações</th>
                 </tr>
               </thead>
               <tbody>
@@ -195,6 +214,16 @@ export function CustomersPage() {
                     <td data-label="CPF/CNPJ">
                       {formatDocument(customer.documento)}
                     </td>
+                    <td className="customer-action-cell" data-label="Ações">
+                      <button
+                        className="edit-customer-button"
+                        type="button"
+                        aria-label={'Editar cliente ' + customer.nome}
+                        onClick={() => setCustomerToEdit(customer)}
+                      >
+                        Editar
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -206,7 +235,15 @@ export function CustomersPage() {
       {isFormOpen && (
         <CustomerFormModal
           onClose={closeForm}
-          onCreated={handleCustomerCreated}
+          onSaved={handleCustomerCreated}
+        />
+      )}
+
+      {customerToEdit && (
+        <CustomerFormModal
+          customer={customerToEdit}
+          onClose={closeEditForm}
+          onSaved={handleCustomerUpdated}
         />
       )}
     </section>
