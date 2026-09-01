@@ -62,4 +62,13 @@ A US01 estabelece a fundação do frontend:
 - rotas protegidas
 - interface responsiva inicial
 
+A US02 adiciona a navegação autenticada:
+
+- layout compartilhado para páginas protegidas
+- cabeçalho com título contextual
+- menu lateral com destaque da rota ativa
+- identificação do funcionário e logout
+- menu recolhível para dispositivos móveis
+- estrutura inicial da visão geral
+
 Testes automatizados não fazem parte desta fase do projeto.
