@@ -89,4 +89,13 @@ A US04 implementa o fluxo de ordens de serviço:
 - estados de carregamento, erro e lista vazia
 - tabela responsiva para dispositivos móveis
 
+A US05 implementa os balanços e conclui a visão geral:
+
+- balanços diário, semanal e mensal integrados à API
+- totais e quantidades calculados somente com ordens concluídas
+- atualização manual dos indicadores financeiros
+- visão geral com valores recebidos e quantidade de ordens abertas
+- estados de carregamento e recuperação de erro
+- cartões responsivos para dispositivos móveis
+
 Testes automatizados não fazem parte desta fase do projeto.
