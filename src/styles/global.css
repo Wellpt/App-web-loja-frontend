@@ -2272,3 +2272,336 @@ a {
     width: 100%;
   }
 }
+
+.employee-list-card {
+  overflow: hidden;
+  margin-top: 24px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--white);
+  box-shadow: 0 12px 34px rgb(16 41 30 / 5%);
+}
+
+.employee-list-header {
+  display: flex;
+  min-height: 86px;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  padding: 20px 26px;
+}
+
+.employee-list-header h3 {
+  margin: 0;
+  color: var(--green-950);
+  font-size: 1rem;
+}
+
+.employee-list-header p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.employee-action-error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid #f0cccc;
+  padding: 13px 20px;
+  color: var(--danger);
+  background: #fff4f4;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.employee-action-error button {
+  border: 0;
+  padding: 3px 7px;
+  color: var(--danger);
+  background: transparent;
+  font-size: 1.15rem;
+  cursor: pointer;
+}
+
+.employee-table-wrap {
+  overflow-x: auto;
+}
+
+.employee-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.employee-table th,
+.employee-table td {
+  border-bottom: 1px solid #edf1ee;
+  padding: 17px 26px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.employee-table th {
+  color: #849088;
+  background: #fbfcfb;
+  font-size: 0.68rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.employee-table td {
+  color: #4f5e55;
+  font-size: 0.8rem;
+}
+
+.employee-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.employee-table tbody tr:hover {
+  background: #fcfdfc;
+}
+
+.employee-list-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.employee-list-identity > span {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  place-items: center;
+  border-radius: 11px;
+  color: var(--green-800);
+  background: var(--green-50);
+  font-size: 0.72rem;
+  font-weight: 850;
+}
+
+.employee-list-identity strong {
+  color: var(--green-950);
+  font-size: 0.82rem;
+}
+
+.employee-list-email {
+  overflow-wrap: anywhere;
+}
+
+.employee-status-badge {
+  display: inline-flex;
+  min-height: 28px;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0 10px;
+  font-size: 0.68rem;
+  font-weight: 850;
+}
+
+.employee-status-badge.is-active {
+  color: var(--green-800);
+  background: var(--green-50);
+}
+
+.employee-status-badge.is-inactive {
+  color: #7a6464;
+  background: #f2eeee;
+}
+
+.employee-list-action {
+  text-align: right !important;
+}
+
+.employee-status-action {
+  min-width: 94px;
+  min-height: 38px;
+  border-radius: 9px;
+  padding: 0 13px;
+  font-size: 0.72rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.employee-status-action.is-danger {
+  border: 1px solid #edcccc;
+  color: var(--danger);
+  background: #fff5f5;
+}
+
+.employee-status-action.is-danger:hover {
+  border-color: #dca9a9;
+  background: #ffeded;
+}
+
+.employee-status-action.is-success {
+  border: 1px solid #cddfd4;
+  color: var(--green-800);
+  background: var(--green-50);
+}
+
+.employee-status-action.is-success:hover:not(:disabled) {
+  border-color: var(--green-600);
+  background: #e6f3ea;
+}
+
+.employee-status-action:disabled {
+  cursor: wait;
+  opacity: 0.62;
+}
+
+.status-confirm-modal {
+  width: min(100%, 520px);
+}
+
+.status-confirm-icon {
+  display: grid;
+  width: 50px;
+  height: 50px;
+  place-items: center;
+  margin-bottom: 22px;
+  border-radius: 15px;
+  color: var(--danger);
+  background: #fff0f0;
+  font-size: 1.05rem;
+  font-weight: 900;
+}
+
+.status-confirm-content h2 {
+  margin: 10px 0 10px;
+  color: var(--green-950);
+  font-size: 1.8rem;
+  letter-spacing: -0.04em;
+}
+
+.status-confirm-content > p:last-child {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.65;
+}
+
+.status-confirm-modal .form-error {
+  margin-top: 20px;
+}
+
+.status-confirm-actions {
+  margin-top: 28px;
+}
+
+.danger-button {
+  min-height: 46px;
+  border: 0;
+  border-radius: 11px;
+  padding: 0 18px;
+  color: var(--white);
+  background: var(--danger);
+  font-size: 0.8rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.danger-button:hover:not(:disabled) {
+  background: #852f2f;
+}
+
+.danger-button:disabled {
+  cursor: wait;
+  opacity: 0.62;
+}
+
+.employee-action-error button:focus-visible,
+.employee-status-action:focus-visible,
+.danger-button:focus-visible {
+  outline: 3px solid rgb(47 118 85 / 30%);
+  outline-offset: 3px;
+}
+
+@media (max-width: 760px) {
+  .employee-list-card {
+    overflow: visible;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .employee-list-header {
+    min-height: auto;
+    margin-bottom: 14px;
+    border: 0;
+    border-radius: 14px;
+    padding: 18px;
+    background: var(--white);
+  }
+
+  .employee-action-error {
+    margin-bottom: 12px;
+    border: 1px solid #f0cccc;
+    border-radius: 12px;
+  }
+
+  .employee-table-wrap {
+    overflow: visible;
+  }
+
+  .employee-table,
+  .employee-table tbody,
+  .employee-table tr,
+  .employee-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .employee-table thead {
+    display: none;
+  }
+
+  .employee-table tr {
+    margin-bottom: 12px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 12px 18px;
+    background: var(--white);
+  }
+
+  .employee-table td {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+    border: 0;
+    padding: 9px 0;
+  }
+
+  .employee-table td::before {
+    color: #89938d;
+    content: attr(data-label);
+    font-size: 0.66rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .employee-list-action {
+    text-align: left !important;
+  }
+
+  .employee-status-action {
+    width: 100%;
+  }
+}
+
+@media (max-width: 620px) {
+  .status-confirm-actions {
+    align-items: stretch;
+    flex-direction: column-reverse;
+  }
+
+  .status-confirm-actions .cancel-button,
+  .status-confirm-actions .danger-button {
+    width: 100%;
+  }
+}
