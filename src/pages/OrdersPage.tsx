@@ -5,6 +5,7 @@ import { ApiError } from '../api/http'
 import { getServiceOrders } from '../api/serviceOrders'
 import { CompleteServiceOrderModal } from '../components/CompleteServiceOrderModal'
 import { NewServiceOrderModal } from '../components/NewServiceOrderModal'
+import { ServiceOrderPrint } from '../components/ServiceOrderPrint'
 import type { Customer } from '../types/customer'
 import type {
   CompletedServiceOrder,
@@ -37,6 +38,7 @@ export function OrdersPage() {
   const [isNewOrderOpen, setIsNewOrderOpen] = useState(false)
   const [orderToComplete, setOrderToComplete] =
     useState<ServiceOrder | null>(null)
+  const [orderToPrint, setOrderToPrint] = useState<ServiceOrder | null>(null)
 
   const loadData = useCallback(async () => {
     try {
@@ -76,6 +78,24 @@ export function OrdersPage() {
 
     return () => controller.abort()
   }, [])
+
+  useEffect(() => {
+    if (!orderToPrint) {
+      return
+    }
+
+    function handleAfterPrint() {
+      setOrderToPrint(null)
+    }
+
+    window.addEventListener('afterprint', handleAfterPrint)
+    const printFrame = window.requestAnimationFrame(() => window.print())
+
+    return () => {
+      window.cancelAnimationFrame(printFrame)
+      window.removeEventListener('afterprint', handleAfterPrint)
+    }
+  }, [orderToPrint])
 
   function handleRetry() {
     setLoadState('loading')
@@ -347,16 +367,26 @@ export function OrdersPage() {
                         <span className="pending-payment">Pendente</span>
                       )}
                     </td>
-                    <td className="order-action-cell">
-                      {order.status === 'aberta' && (
+                    <td className="order-action-cell" data-label="Ações">
+                      <div className="order-actions">
+                        {order.status === 'aberta' && (
+                          <button
+                            className="complete-order-button"
+                            type="button"
+                            onClick={() => setOrderToComplete(order)}
+                          >
+                            Concluir
+                          </button>
+                        )}
                         <button
-                          className="complete-order-button"
+                          className="print-order-button"
                           type="button"
-                          onClick={() => setOrderToComplete(order)}
+                          aria-label={'Imprimir ordem #' + order.id}
+                          onClick={() => setOrderToPrint({ ...order })}
                         >
-                          Concluir
+                          Imprimir
                         </button>
-                      )}
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -379,6 +409,15 @@ export function OrdersPage() {
           serviceOrder={orderToComplete}
           onClose={closeCompletion}
           onCompleted={handleOrderCompleted}
+        />
+      )}
+
+      {orderToPrint && (
+        <ServiceOrderPrint
+          serviceOrder={orderToPrint}
+          customer={customers.find(
+            (customer) => customer.id === orderToPrint.cliente.id,
+          )}
         />
       )}
     </section>

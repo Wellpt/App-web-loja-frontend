@@ -1548,6 +1548,13 @@ a {
   text-align: right !important;
 }
 
+.order-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+}
+
 .complete-order-button {
   min-height: 38px;
   border: 1px solid #cddfd4;
@@ -1563,6 +1570,24 @@ a {
 .complete-order-button:hover {
   border-color: var(--green-600);
   background: #e6f3ea;
+}
+
+.print-order-button {
+  min-height: 38px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 0 13px;
+  color: #58665e;
+  background: var(--white);
+  font-size: 0.72rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.print-order-button:hover {
+  border-color: #b9c9bf;
+  color: var(--green-800);
+  background: #f8faf8;
 }
 
 .visually-hidden {
@@ -1668,6 +1693,7 @@ a {
 .order-tabs button:focus-visible,
 .customer-required-notice a:focus-visible,
 .complete-order-button:focus-visible,
+.print-order-button:focus-visible,
 .form-field select:focus-visible,
 .form-field textarea:focus-visible,
 .confirmation-field input:focus-visible {
@@ -1769,6 +1795,277 @@ a {
 
   .complete-order-button {
     width: 100%;
+  }
+
+  .order-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .print-order-button {
+    width: 100%;
+  }
+}
+
+.service-order-print {
+  display: none;
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm;
+  }
+
+  html,
+  body {
+    min-width: 0 !important;
+    background: #ffffff !important;
+  }
+
+  body > * {
+    display: none !important;
+  }
+
+  body > .service-order-print {
+    display: block !important;
+  }
+
+  .service-order-print {
+    width: 100%;
+    color: #17211b;
+    background: #ffffff;
+    font-family: Inter, Arial, sans-serif;
+    font-size: 10pt;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .print-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    border-bottom: 2px solid #173829;
+    padding-bottom: 16px;
+  }
+
+  .print-brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+  }
+
+  .print-brand > span {
+    display: grid;
+    width: 38px;
+    height: 38px;
+    place-items: center;
+    border-radius: 10px;
+    color: #10291e;
+    background: #bde3ca;
+    font-size: 8pt;
+    font-weight: 850;
+  }
+
+  .print-brand strong,
+  .print-brand small,
+  .print-order-number span,
+  .print-order-number strong {
+    display: block;
+  }
+
+  .print-brand strong {
+    color: #10291e;
+    font-size: 12pt;
+  }
+
+  .print-brand small {
+    margin-top: 2px;
+    color: #69756e;
+    font-size: 7.5pt;
+  }
+
+  .print-order-number {
+    text-align: right;
+  }
+
+  .print-order-number span {
+    color: #69756e;
+    font-size: 7.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  .print-order-number strong {
+    margin-top: 3px;
+    color: #10291e;
+    font-size: 17pt;
+  }
+
+  .print-title {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 24px 0 20px;
+  }
+
+  .print-title p {
+    margin: 0 0 5px;
+    color: #2f7655;
+    font-size: 7pt;
+    font-weight: 850;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .print-title h1 {
+    margin: 0;
+    color: #10291e;
+    font-size: 22pt;
+    letter-spacing: -0.03em;
+  }
+
+  .print-status {
+    display: inline-flex;
+    min-height: 28px;
+    align-items: center;
+    border-radius: 999px;
+    padding: 0 11px;
+    font-size: 7.5pt;
+    font-weight: 850;
+  }
+
+  .print-status.is-open {
+    color: #775b19;
+    background: #fff5d9;
+  }
+
+  .print-status.is-completed {
+    color: #1d4935;
+    background: #eff7f2;
+  }
+
+  .print-section {
+    break-inside: avoid;
+    margin-top: 14px;
+    border: 1px solid #dfe6e1;
+    border-radius: 10px;
+    padding: 16px;
+  }
+
+  .print-section h2 {
+    margin: 0 0 13px;
+    color: #173829;
+    font-size: 9pt;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .print-details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 13px 22px;
+  }
+
+  .print-detail-wide {
+    grid-column: 1 / -1;
+  }
+
+  .print-detail span,
+  .print-detail strong {
+    display: block;
+  }
+
+  .print-detail span,
+  .print-payment span {
+    color: #7b8780;
+    font-size: 7pt;
+  }
+
+  .print-detail strong {
+    margin-top: 4px;
+    color: #29372f;
+    font-size: 9pt;
+    overflow-wrap: anywhere;
+  }
+
+  .print-service-description {
+    min-height: 42px;
+    margin: 0;
+    color: #35443b;
+    font-size: 9pt;
+    line-height: 1.65;
+    white-space: pre-wrap;
+  }
+
+  .print-timeline-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .print-payment-section {
+    border-color: #cfe0d5;
+    background: #f8fbf9;
+  }
+
+  .print-payment {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  .print-payment span,
+  .print-payment strong {
+    display: block;
+  }
+
+  .print-payment strong {
+    margin-top: 4px;
+    color: #173829;
+    font-size: 11pt;
+  }
+
+  .print-payment-pending {
+    margin: 0;
+    color: #775b19;
+    font-size: 8.5pt;
+  }
+
+  .print-signatures {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 48px;
+    break-inside: avoid;
+    margin-top: 58px;
+  }
+
+  .print-signatures div {
+    text-align: center;
+  }
+
+  .print-signatures span {
+    display: block;
+    border-top: 1px solid #647168;
+  }
+
+  .print-signatures strong {
+    display: block;
+    margin-top: 7px;
+    color: #526057;
+    font-size: 7.5pt;
+    font-weight: 700;
+  }
+
+  .print-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 32px;
+    border-top: 1px solid #dfe6e1;
+    padding-top: 10px;
+    color: #7b8780;
+    font-size: 7pt;
   }
 }
 

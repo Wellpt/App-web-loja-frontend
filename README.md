@@ -137,4 +137,12 @@ A US10 aprimora o histórico das ordens:
 - data de conclusão exibida adicionalmente nas ordens finalizadas
 - identificação visual entre abertura e conclusão
 
+A US11 adiciona impressão de ordens de serviço:
+
+- ação de impressão para ordens abertas e concluídas
+- documento A4 com dados do cliente e do serviço
+- datas, situação e recebimento
+- campos para assinatura
+- suporte ao diálogo nativo e salvamento em PDF
+
 Testes automatizados não fazem parte desta fase do projeto.
