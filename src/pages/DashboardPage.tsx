@@ -74,7 +74,7 @@ export function DashboardPage() {
   const [loadState, setLoadState] = useState<LoadState>('loading')
   const [loadError, setLoadError] = useState<string | null>(null)
   const [areFinancialValuesHidden, setAreFinancialValuesHidden] =
-    useState(false)
+    useState(true)
 
   const loadDashboard = useCallback(async () => {
     try {
