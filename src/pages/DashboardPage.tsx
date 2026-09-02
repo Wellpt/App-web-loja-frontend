@@ -73,6 +73,8 @@ export function DashboardPage() {
   const [snapshot, setSnapshot] = useState<DashboardSnapshot | null>(null)
   const [loadState, setLoadState] = useState<LoadState>('loading')
   const [loadError, setLoadError] = useState<string | null>(null)
+  const [areFinancialValuesHidden, setAreFinancialValuesHidden] =
+    useState(false)
 
   const loadDashboard = useCallback(async () => {
     try {
@@ -118,6 +120,7 @@ export function DashboardPage() {
         ? formatCurrency(snapshot.balances.diario.valor_total)
         : '—',
       note: 'Balanço diário',
+      isFinancial: true,
     },
     {
       label: 'Esta semana',
@@ -125,6 +128,7 @@ export function DashboardPage() {
         ? formatCurrency(snapshot.balances.semanal.valor_total)
         : '—',
       note: 'Desde segunda-feira',
+      isFinancial: true,
     },
     {
       label: 'Este mês',
@@ -132,6 +136,7 @@ export function DashboardPage() {
         ? formatCurrency(snapshot.balances.mensal.valor_total)
         : '—',
       note: 'Desde o primeiro dia',
+      isFinancial: true,
     },
     {
       label: 'Ordens abertas',
@@ -140,6 +145,7 @@ export function DashboardPage() {
           ? String(snapshot.openOrderCount)
           : '—',
       note: 'Serviços em andamento',
+      isFinancial: false,
     },
   ]
 
@@ -151,6 +157,7 @@ export function DashboardPage() {
           ? String(snapshot.customerCount)
           : '—',
       note: 'Base de clientes',
+      isFinancial: false,
     },
     {
       label: 'Ordens abertas',
@@ -159,6 +166,7 @@ export function DashboardPage() {
           ? String(snapshot.openOrderCount)
           : '—',
       note: 'Serviços em andamento',
+      isFinancial: false,
     },
     {
       label: 'Ordens concluídas',
@@ -167,6 +175,7 @@ export function DashboardPage() {
           ? String(snapshot.completedOrderCount)
           : '—',
       note: 'Serviços finalizados',
+      isFinancial: false,
     },
     {
       label: 'Total de ordens',
@@ -175,6 +184,7 @@ export function DashboardPage() {
           ? String(snapshot.totalOrderCount)
           : '—',
       note: 'Histórico operacional',
+      isFinancial: false,
     },
   ]
 
@@ -188,9 +198,25 @@ export function DashboardPage() {
           <h2>Bem-vindo, {firstName}.</h2>
           <p>Acompanhe os principais números da sua operação.</p>
         </div>
-        <Link className="primary-link" to="/ordens">
-          Nova ordem
-        </Link>
+        <div className="dashboard-actions">
+          {isOwner && (
+            <button
+              className="privacy-toggle"
+              type="button"
+              aria-pressed={areFinancialValuesHidden}
+              onClick={() =>
+                setAreFinancialValuesHidden((currentValue) => !currentValue)
+              }
+            >
+              {areFinancialValuesHidden
+                ? 'Mostrar valores'
+                : 'Ocultar valores'}
+            </button>
+          )}
+          <Link className="primary-link" to="/ordens">
+            Nova ordem
+          </Link>
+        </div>
       </div>
 
       {loadState === 'error' && (
@@ -216,7 +242,22 @@ export function DashboardPage() {
             {loadState === 'loading' ? (
               <span className="metric-loading" aria-label="Carregando indicador" />
             ) : (
-              <strong>{metric.value}</strong>
+              <strong
+                className={
+                  metric.isFinancial && areFinancialValuesHidden
+                    ? 'is-value-hidden'
+                    : undefined
+                }
+                aria-label={
+                  metric.isFinancial && areFinancialValuesHidden
+                    ? 'Valor oculto'
+                    : undefined
+                }
+              >
+                {metric.isFinancial && areFinancialValuesHidden
+                  ? 'R$ •••••'
+                  : metric.value}
+              </strong>
             )}
             <span>{metric.note}</span>
           </article>

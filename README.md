@@ -124,4 +124,11 @@ A US08 completa o gerenciamento de funcionários:
 - atualização imediata da linha alterada
 - preservação do histórico sem exclusão de contas
 
+A US09 adiciona privacidade aos indicadores financeiros:
+
+- botão para ocultar e mostrar valores na visão geral
+- totais financeiros mascarados sem ocultar indicadores operacionais
+- controle disponível somente para o perfil empresário
+- preferência mantida apenas durante a exibição atual
+
 Testes automatizados não fazem parte desta fase do projeto.
