@@ -1,4 +1,5 @@
-const API_BASE_URL = '/api'
+const configuredApiBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim()
+const API_BASE_URL = (configuredApiBaseUrl || '/api').replace(/\/+$/, '')
 const UNAUTHORIZED_EVENT = 'auth:unauthorized'
 
 interface ApiErrorResponse {
