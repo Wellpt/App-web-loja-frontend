@@ -18,6 +18,23 @@ npm run dev
 O Vite inicia o frontend e encaminha chamadas feitas para `/api` ao backend
 local, removendo esse prefixo antes de enviar a requisição.
 
+## Publicação no GitHub Pages
+
+O workflow **.github/workflows/deploy-pages.yml** gera e publica o frontend em:
+
+- https://wellpt.github.io/App-web-loja-frontend/
+
+Antes de ativar a integração com o backend publicado, cadastre a variável
+**VITE_API_BASE_URL** em **Settings > Secrets and variables > Actions > Variables**
+com a URL pública da API, sem barra no final.
+
+Em **Settings > Pages**, selecione **GitHub Actions** como fonte da publicação.
+O deploy ocorre automaticamente após alterações integradas à branch **main** e
+também pode ser iniciado manualmente pela aba **Actions**.
+
+O build do Pages usa o caminho-base **/App-web-loja-frontend/**. O ambiente local
+continua usando **/** e o proxy **/api**.
+
 ## Comandos
 
 ```bash

@@ -9,9 +9,11 @@ import { EmployeesPage } from '../pages/EmployeesPage'
 import { LoginPage } from '../pages/LoginPage'
 import { OrdersPage } from '../pages/OrdersPage'
 
+const routerBaseName = import.meta.env.BASE_URL.replace(/\/$/, '') || '/'
+
 export function AppRoutes() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={routerBaseName}>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
 
