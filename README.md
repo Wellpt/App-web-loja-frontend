@@ -131,4 +131,10 @@ A US09 adiciona privacidade aos indicadores financeiros:
 - controle disponível somente para o perfil empresário
 - preferência mantida apenas durante a exibição atual
 
+A US10 aprimora o histórico das ordens:
+
+- data de abertura sempre visível
+- data de conclusão exibida adicionalmente nas ordens finalizadas
+- identificação visual entre abertura e conclusão
+
 Testes automatizados não fazem parte desta fase do projeto.
