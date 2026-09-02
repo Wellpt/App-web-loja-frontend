@@ -314,16 +314,18 @@ export function OrdersPage() {
                     </td>
                     <td data-label="Data">
                       <div className="order-date">
-                        <span>
-                          {order.status === 'aberta' ? 'Criada em' : 'Concluída em'}
-                        </span>
-                        <strong>
-                          {formatDateTime(
-                            order.status === 'concluida' && order.concluida_em
-                              ? order.concluida_em
-                              : order.criada_em,
-                          )}
-                        </strong>
+                        <div className="order-date-entry">
+                          <span>Aberta em</span>
+                          <strong>{formatDateTime(order.criada_em)}</strong>
+                        </div>
+                        {order.status === 'concluida' && order.concluida_em && (
+                          <div className="order-date-entry is-completed">
+                            <span>Concluída em</span>
+                            <strong>
+                              {formatDateTime(order.concluida_em)}
+                            </strong>
+                          </div>
+                        )}
                       </div>
                     </td>
                     <td data-label="Status">

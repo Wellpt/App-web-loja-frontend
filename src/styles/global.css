@@ -1485,6 +1485,22 @@ a {
   min-width: 110px;
 }
 
+.order-date {
+  display: flex;
+  min-width: 125px;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.order-date-entry.is-completed {
+  border-left: 2px solid #c9e5d3;
+  padding-left: 8px;
+}
+
+.order-date-entry.is-completed strong {
+  color: var(--green-800);
+}
+
 .order-date span,
 .order-payment span {
   margin-bottom: 4px;
