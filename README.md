@@ -115,4 +115,13 @@ A US07 adiciona perfis de acesso e gestão da equipe:
 - perfil funcionário atribuído automaticamente
 - tratamento das mensagens de erro da API
 
+A US08 completa o gerenciamento de funcionários:
+
+- listagem alfabética de contas com perfil funcionário
+- identificação visual de acessos ativos e inativos
+- desativação com confirmação
+- reativação de acesso
+- atualização imediata da linha alterada
+- preservação do histórico sem exclusão de contas
+
 Testes automatizados não fazem parte desta fase do projeto.
