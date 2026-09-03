@@ -49,7 +49,7 @@ export function AuthenticatedLayout() {
       item.end
         ? location.pathname === item.to
         : location.pathname.startsWith(item.to),
-    )?.label ?? 'App Web Loja'
+    )?.label ?? 'VTcell'
 
   async function handleLogout() {
     try {
@@ -81,9 +81,9 @@ export function AuthenticatedLayout() {
         <div className="sidebar-header">
           <div className="brand sidebar-brand">
             <span className="brand-mark" aria-hidden="true">
-              AL
+              VT
             </span>
-            <span>App Web Loja</span>
+            <span>VTcell</span>
           </div>
 
           <button
@@ -151,7 +151,7 @@ export function AuthenticatedLayout() {
           </button>
 
           <div>
-            <p className="topbar-label">App Web Loja</p>
+            <p className="topbar-label">VTcell</p>
             <h1>{currentPage}</h1>
           </div>
 

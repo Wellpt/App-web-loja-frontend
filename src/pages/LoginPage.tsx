@@ -53,8 +53,8 @@ export function LoginPage() {
         aria-label={'Apresenta\u00e7\u00e3o'}
       >
         <div className="brand">
-          <span className="brand-mark" aria-hidden="true">AL</span>
-          <span>App Web Loja</span>
+          <span className="brand-mark" aria-hidden="true">VT</span>
+          <span>VTcell</span>
         </div>
         <div className="login-hero-content">
           <p className="eyebrow">{'Gest\u00e3o de servi\u00e7os'}</p>

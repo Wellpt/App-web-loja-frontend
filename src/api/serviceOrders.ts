@@ -1,9 +1,8 @@
 import type {
   CompleteServiceOrderInput,
-  CompletedServiceOrder,
   CreateServiceOrderInput,
-  CreatedServiceOrder,
   ServiceOrder,
+  UpdateServiceOrderValueInput,
 } from '../types/serviceOrder'
 import { apiRequest } from './http'
 
@@ -11,12 +10,8 @@ interface ServiceOrderListResponse {
   ordens_servico: ServiceOrder[]
 }
 
-interface CreatedServiceOrderResponse {
-  ordem_servico: CreatedServiceOrder
-}
-
-interface CompletedServiceOrderResponse {
-  ordem_servico: CompletedServiceOrder
+interface ServiceOrderResponse {
+  ordem_servico: ServiceOrder
 }
 
 export async function getServiceOrders(
@@ -32,8 +27,8 @@ export async function getServiceOrders(
 
 export async function createServiceOrder(
   input: CreateServiceOrderInput,
-): Promise<CreatedServiceOrder> {
-  const response = await apiRequest<CreatedServiceOrderResponse>(
+): Promise<ServiceOrder> {
+  const response = await apiRequest<ServiceOrderResponse>(
     '/service-orders',
     {
       method: 'POST',
@@ -44,12 +39,27 @@ export async function createServiceOrder(
   return response.ordem_servico
 }
 
+export async function updateServiceOrderValue(
+  serviceOrderId: number,
+  input: UpdateServiceOrderValueInput,
+): Promise<ServiceOrder> {
+  const response = await apiRequest<ServiceOrderResponse>(
+    '/service-orders/' + serviceOrderId,
+    {
+      method: 'PATCH',
+      body: JSON.stringify(input),
+    },
+  )
+
+  return response.ordem_servico
+}
+
 export async function completeServiceOrder(
   serviceOrderId: number,
   input: CompleteServiceOrderInput,
-): Promise<CompletedServiceOrder> {
-  const response = await apiRequest<CompletedServiceOrderResponse>(
-    '/service-orders/' + serviceOrderId,
+): Promise<ServiceOrder> {
+  const response = await apiRequest<ServiceOrderResponse>(
+    '/service-orders/' + serviceOrderId + '/complete',
     {
       method: 'PATCH',
       body: JSON.stringify(input),

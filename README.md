@@ -1,6 +1,6 @@
-# App Web Loja - Frontend
+# VTcell - Frontend
 
-Frontend da aplicação App Web Loja, criado com React, TypeScript e Vite.
+Frontend da aplicação VTcell, criado com React, TypeScript e Vite.
 
 ## Requisitos
 
@@ -161,5 +161,14 @@ A US11 adiciona impressão de ordens de serviço:
 - datas, situação e recebimento
 - campos para assinatura
 - suporte ao diálogo nativo e salvamento em PDF
+
+A US12 antecipa o valor da ordem de serviço:
+
+- valor obrigatório no cadastro de novas ordens
+- exibição do valor cobrado nas ordens abertas
+- alteração do valor permitida somente antes da conclusão
+- conclusão solicitando apenas a forma de pagamento
+- suporte a ordens antigas ainda sem valor
+- impressão com valor cobrado e situação do pagamento
 
 Testes automatizados não fazem parte desta fase do projeto.

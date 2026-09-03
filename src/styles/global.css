@@ -1552,6 +1552,7 @@ a {
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  flex-wrap: wrap;
   gap: 7px;
 }
 
@@ -1570,6 +1571,31 @@ a {
 .complete-order-button:hover {
   border-color: var(--green-600);
   background: #e6f3ea;
+}
+
+.complete-order-button:disabled,
+.complete-order-button:disabled:hover {
+  border-color: var(--border);
+  color: #9aa49e;
+  background: #f3f5f3;
+  cursor: not-allowed;
+}
+
+.edit-order-value-button {
+  min-height: 38px;
+  border: 1px solid #cddfd4;
+  border-radius: 9px;
+  padding: 0 13px;
+  color: var(--green-800);
+  background: var(--white);
+  font-size: 0.72rem;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.edit-order-value-button:hover {
+  border-color: var(--green-600);
+  background: var(--green-50);
 }
 
 .print-order-button {
@@ -1640,6 +1666,13 @@ a {
   line-height: 1.5;
 }
 
+.order-summary-amount {
+  display: block;
+  margin-top: 11px;
+  color: var(--green-800);
+  font-size: 0.82rem;
+}
+
 .irreversible-warning {
   margin: 14px 0 0;
   border-radius: 11px;
@@ -1692,6 +1725,7 @@ a {
 
 .order-tabs button:focus-visible,
 .customer-required-notice a:focus-visible,
+.edit-order-value-button:focus-visible,
 .complete-order-button:focus-visible,
 .print-order-button:focus-visible,
 .form-field select:focus-visible,
@@ -1793,17 +1827,15 @@ a {
     display: none;
   }
 
-  .complete-order-button {
+  .edit-order-value-button,
+  .complete-order-button,
+  .print-order-button {
     width: 100%;
   }
 
   .order-actions {
     align-items: stretch;
     flex-direction: column;
-  }
-
-  .print-order-button {
-    width: 100%;
   }
 }
 

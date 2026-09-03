@@ -22,18 +22,15 @@ export function ServiceOrderPrint({
   customer,
 }: ServiceOrderPrintProps) {
   const isCompleted = serviceOrder.status === 'concluida'
-  const hasPayment =
-    isCompleted &&
-    serviceOrder.valor !== null &&
-    serviceOrder.forma_pagamento
+  const amount = serviceOrder.valor
 
   return createPortal(
     <article className="service-order-print">
       <header className="print-header">
         <div className="print-brand">
-          <span aria-hidden="true">AL</span>
+          <span aria-hidden="true">VT</span>
           <div>
-            <strong>App Web Loja</strong>
+            <strong>VTcell</strong>
             <small>Documento de acompanhamento do serviço</small>
           </div>
         </div>
@@ -117,21 +114,25 @@ export function ServiceOrderPrint({
       </section>
 
       <section className="print-section print-payment-section">
-        <h2>Recebimento</h2>
-        {hasPayment ? (
+        <h2>Valor e recebimento</h2>
+        {amount !== null ? (
           <div className="print-payment">
             <div>
-              <span>Valor recebido</span>
-              <strong>{formatCurrency(serviceOrder.valor as number)}</strong>
+              <span>Valor cobrado</span>
+              <strong>{formatCurrency(amount)}</strong>
             </div>
             <div>
-              <span>Forma de pagamento</span>
-              <strong>{serviceOrder.forma_pagamento}</strong>
+              <span>Situação do pagamento</span>
+              <strong>
+                {isCompleted && serviceOrder.forma_pagamento
+                  ? 'Recebido — ' + serviceOrder.forma_pagamento
+                  : 'Pendente'}
+              </strong>
             </div>
           </div>
         ) : (
           <p className="print-payment-pending">
-            Pagamento pendente — ordem ainda não concluída.
+            Valor não informado — atualize esta ordem antes da conclusão.
           </p>
         )}
       </section>
@@ -148,7 +149,7 @@ export function ServiceOrderPrint({
       </section>
 
       <footer className="print-footer">
-        <span>App Web Loja</span>
+        <span>VTcell</span>
         <span>Emitido em {formatDateTime(new Date().toISOString())}</span>
       </footer>
     </article>,
