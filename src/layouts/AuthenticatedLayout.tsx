@@ -13,6 +13,7 @@ interface NavigationItem {
 const navigation: NavigationItem[] = [
   { to: '/', label: 'Visão geral', end: true },
   { to: '/clientes', label: 'Clientes', end: false },
+  { to: '/vendas', label: 'Vendas', end: false },
   { to: '/ordens', label: 'Ordens de serviço', end: false },
   {
     to: '/balancos',

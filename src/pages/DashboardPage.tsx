@@ -213,6 +213,9 @@ export function DashboardPage() {
                 : 'Ocultar valores'}
             </button>
           )}
+          <Link className="primary-link" to="/vendas">
+            Nova venda
+          </Link>
           <Link className="primary-link" to="/ordens">
             Nova ordem
           </Link>
@@ -271,11 +274,12 @@ export function DashboardPage() {
           <p>
             {isOwner
               ? 'Acesse rapidamente cadastros, atendimentos e gestão.'
-              : 'Acesse rapidamente clientes e atendimentos.'}
+              : 'Acesse rapidamente clientes, vendas e atendimentos.'}
           </p>
         </div>
         <div className="quick-links">
           <Link to="/clientes">Ver clientes</Link>
+          <Link to="/vendas">Ver vendas</Link>
           <Link to="/ordens">Ver ordens</Link>
           {isOwner && <Link to="/balancos">Ver balanços</Link>}
           {isOwner && <Link to="/funcionarios">Cadastrar funcionário</Link>}

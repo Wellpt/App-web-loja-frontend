@@ -8,6 +8,7 @@ import { DashboardPage } from '../pages/DashboardPage'
 import { EmployeesPage } from '../pages/EmployeesPage'
 import { LoginPage } from '../pages/LoginPage'
 import { OrdersPage } from '../pages/OrdersPage'
+import { SalesPage } from '../pages/SalesPage'
 
 const routerBaseName = import.meta.env.BASE_URL.replace(/\/$/, '') || '/'
 
@@ -24,6 +25,7 @@ export function AppRoutes() {
               path="/clientes"
               element={<CustomersPage />}
             />
+            <Route path="/vendas" element={<SalesPage />} />
             <Route path="/ordens" element={<OrdersPage />} />
             <Route
               element={
