@@ -1459,9 +1459,7 @@ a {
 .order-description strong,
 .order-description span,
 .order-date strong,
-.order-date span,
-.order-payment strong,
-.order-payment span {
+.order-date span {
   display: block;
 }
 
@@ -1480,8 +1478,7 @@ a {
   -webkit-line-clamp: 2;
 }
 
-.order-date,
-.order-payment {
+.order-date {
   min-width: 110px;
 }
 
@@ -1501,22 +1498,76 @@ a {
   color: var(--green-800);
 }
 
-.order-date span,
-.order-payment span {
+.order-date span {
   margin-bottom: 4px;
   color: #909a94;
   font-size: 0.66rem;
 }
 
-.order-date strong,
-.order-payment strong {
+.order-date strong {
   color: #45524b;
   font-size: 0.76rem;
   white-space: nowrap;
 }
 
-.order-payment span {
-  margin: 4px 0 0;
+.order-financials {
+  display: flex;
+  min-width: 165px;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.order-financial-main span,
+.order-financial-main strong {
+  display: block;
+}
+
+.order-financial-main span {
+  margin-bottom: 3px;
+  color: #909a94;
+  font-size: 0.64rem;
+}
+
+.order-financial-main strong {
+  color: var(--green-950);
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+.order-financials dl {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+}
+
+.order-financials dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.order-financials dt,
+.order-financials dd {
+  font-size: 0.65rem;
+}
+
+.order-financials dt {
+  color: #909a94;
+}
+
+.order-financials dd {
+  margin: 0;
+  color: #556159;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.order-payment-status {
+  width: fit-content;
+  color: var(--green-600);
+  font-size: 0.66rem;
+  font-weight: 750;
 }
 
 .status-badge {
@@ -1581,7 +1632,7 @@ a {
   cursor: not-allowed;
 }
 
-.edit-order-value-button {
+.edit-order-values-button {
   min-height: 38px;
   border: 1px solid #cddfd4;
   border-radius: 9px;
@@ -1593,7 +1644,7 @@ a {
   cursor: pointer;
 }
 
-.edit-order-value-button:hover {
+.edit-order-values-button:hover {
   border-color: var(--green-600);
   background: var(--green-50);
 }
@@ -1643,6 +1694,73 @@ a {
 
 .service-order-form .modal-actions {
   margin-top: 4px;
+}
+
+.service-order-values-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.service-order-field-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.service-order-field-heading label {
+  margin-bottom: 8px;
+}
+
+.service-order-field-heading span {
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 0.66rem;
+}
+
+.service-order-labor-preview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border: 1px solid #cfe2d6;
+  border-radius: 12px;
+  padding: 14px 16px;
+  background: var(--green-50);
+}
+
+.service-order-labor-preview > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.service-order-labor-preview span {
+  color: var(--green-950);
+  font-size: 0.76rem;
+  font-weight: 850;
+}
+
+.service-order-labor-preview small {
+  color: var(--muted);
+  font-size: 0.65rem;
+}
+
+.service-order-labor-preview strong {
+  flex: 0 0 auto;
+  color: var(--green-800);
+  font-size: 1rem;
+}
+
+.service-order-labor-preview.is-invalid {
+  border-color: #efcccc;
+  background: #fff4f4;
+}
+
+.service-order-labor-preview.is-invalid span,
+.service-order-labor-preview.is-invalid strong {
+  color: var(--danger);
 }
 
 .order-summary {
@@ -1725,7 +1843,7 @@ a {
 
 .order-tabs button:focus-visible,
 .customer-required-notice a:focus-visible,
-.edit-order-value-button:focus-visible,
+.edit-order-values-button:focus-visible,
 .complete-order-button:focus-visible,
 .print-order-button:focus-visible,
 .form-field select:focus-visible,
@@ -1827,7 +1945,7 @@ a {
     display: none;
   }
 
-  .edit-order-value-button,
+  .edit-order-values-button,
   .complete-order-button,
   .print-order-button {
     width: 100%;
@@ -1835,6 +1953,17 @@ a {
 
   .order-actions {
     align-items: stretch;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 620px) {
+  .service-order-values-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .service-order-labor-preview {
+    align-items: flex-start;
     flex-direction: column;
   }
 }

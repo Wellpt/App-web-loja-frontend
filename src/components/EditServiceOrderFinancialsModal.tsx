@@ -1,29 +1,41 @@
 import { useEffect, useState, type FormEvent, type MouseEvent } from 'react'
-import { createServiceOrder } from '../api/serviceOrders'
 import { ApiError } from '../api/http'
-import type { Customer } from '../types/customer'
-import type { ServiceOrder } from '../types/serviceOrder'
+import { updateServiceOrderFinancials } from '../api/serviceOrders'
+import type {
+  ServiceOrder,
+  UpdateServiceOrderFinancialsInput,
+} from '../types/serviceOrder'
 import {
   currencyInputToNumber,
   formatCurrency,
   formatCurrencyInput,
 } from '../utils/formatters'
 
-interface NewServiceOrderModalProps {
-  customers: Customer[]
+interface EditServiceOrderFinancialsModalProps {
+  serviceOrder: ServiceOrder
   onClose: () => void
-  onCreated: (serviceOrder: ServiceOrder) => void
+  onUpdated: (serviceOrder: ServiceOrder) => void
 }
 
-export function NewServiceOrderModal({
-  customers,
+function getInitialAmount(value: number | null | undefined): string {
+  return value == null
+    ? ''
+    : formatCurrencyInput(String(Math.round(value * 100)))
+}
+
+function valuesMatch(first: number, second: number): boolean {
+  return Math.round(first * 100) === Math.round(second * 100)
+}
+
+export function EditServiceOrderFinancialsModal({
+  serviceOrder,
   onClose,
-  onCreated,
-}: NewServiceOrderModalProps) {
-  const [customerId, setCustomerId] = useState('')
-  const [description, setDescription] = useState('')
-  const [amount, setAmount] = useState('')
-  const [materialCost, setMaterialCost] = useState('')
+  onUpdated,
+}: EditServiceOrderFinancialsModalProps) {
+  const [amount, setAmount] = useState(getInitialAmount(serviceOrder.valor))
+  const [materialCost, setMaterialCost] = useState(
+    getInitialAmount(serviceOrder.custo_materiais),
+  )
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -55,20 +67,8 @@ export function NewServiceOrderModal({
     event.preventDefault()
     setError(null)
 
-    const selectedCustomerId = Number(customerId)
-    const serviceDescription = description.trim()
     const numericAmount = currencyInputToNumber(amount)
     const numericMaterialCost = currencyInputToNumber(materialCost)
-
-    if (!Number.isInteger(selectedCustomerId) || selectedCustomerId <= 0) {
-      setError('Selecione o cliente desta ordem de serviço.')
-      return
-    }
-
-    if (!serviceDescription) {
-      setError('Descreva o serviço que será realizado.')
-      return
-    }
 
     if (numericAmount <= 0) {
       setError('Informe um valor maior que zero.')
@@ -85,22 +85,44 @@ export function NewServiceOrderModal({
       return
     }
 
+    const previousAmount = serviceOrder.valor
+    const previousMaterialCost = serviceOrder.custo_materiais ?? 0
+    const amountChanged =
+      previousAmount === null || !valuesMatch(numericAmount, previousAmount)
+    const materialCostChanged = !valuesMatch(
+      numericMaterialCost,
+      previousMaterialCost,
+    )
+
+    if (!amountChanged && !materialCostChanged) {
+      setError('Altere o valor cobrado ou o custo dos materiais antes de salvar.')
+      return
+    }
+
+    const input: UpdateServiceOrderFinancialsInput = {}
+
+    if (amountChanged) {
+      input.valor = numericAmount
+    }
+
+    if (materialCostChanged) {
+      input.custo_materiais = numericMaterialCost
+    }
+
     setIsSubmitting(true)
 
     try {
-      const serviceOrder = await createServiceOrder({
-        cliente_id: selectedCustomerId,
-        descricao_servico: serviceDescription,
-        valor: numericAmount,
-        custo_materiais: numericMaterialCost,
-      })
-      onCreated(serviceOrder)
+      const updatedOrder = await updateServiceOrderFinancials(
+        serviceOrder.id,
+        input,
+      )
+      onUpdated(updatedOrder)
       onClose()
     } catch (requestError) {
       setError(
         requestError instanceof ApiError
           ? requestError.message
-          : 'Não foi possível criar a ordem. Tente novamente.',
+          : 'Não foi possível alterar os valores. Tente novamente.',
       )
     } finally {
       setIsSubmitting(false)
@@ -117,12 +139,15 @@ export function NewServiceOrderModal({
         className="customer-modal service-order-modal"
         role="dialog"
         aria-modal="true"
-        aria-labelledby="new-order-modal-title"
+        aria-labelledby="edit-order-financials-modal-title"
+        aria-describedby="edit-order-financials-help"
       >
         <div className="modal-header">
           <div>
-            <p className="eyebrow">Nova solicitação</p>
-            <h2 id="new-order-modal-title">Nova ordem de serviço</h2>
+            <p className="eyebrow">Valores do serviço</p>
+            <h2 id="edit-order-financials-modal-title">
+              Alterar valores da ordem #{serviceOrder.id}
+            </h2>
           </div>
           <button
             className="modal-close"
@@ -135,46 +160,24 @@ export function NewServiceOrderModal({
           </button>
         </div>
 
+        <div className="order-summary">
+          <span>{serviceOrder.cliente.nome}</span>
+          <p>{serviceOrder.descricao_servico}</p>
+        </div>
+
+        <p className="irreversible-warning" id="edit-order-financials-help">
+          O valor e o custo podem ser alterados somente enquanto a ordem estiver
+          aberta. Após a conclusão, eles serão definitivos.
+        </p>
+
         <form className="service-order-form" onSubmit={handleSubmit}>
-          <div className="form-field">
-            <label htmlFor="service-order-customer">Cliente</label>
-            <select
-              id="service-order-customer"
-              value={customerId}
-              onChange={(event) => setCustomerId(event.target.value)}
-              disabled={isSubmitting}
-              required
-              autoFocus
-            >
-              <option value="">Selecione um cliente</option>
-              {customers.map((customer) => (
-                <option key={customer.id} value={customer.id}>
-                  {customer.nome}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="form-field">
-            <label htmlFor="service-order-description">Descrição do serviço</label>
-            <textarea
-              id="service-order-description"
-              value={description}
-              onChange={(event) => setDescription(event.target.value)}
-              placeholder="Descreva o que precisa ser feito"
-              rows={5}
-              disabled={isSubmitting}
-              required
-            />
-          </div>
-
           <div className="service-order-values-grid">
             <div className="form-field">
-              <label htmlFor="new-service-order-amount">Valor cobrado</label>
+              <label htmlFor="edit-service-order-amount">Valor cobrado</label>
               <div className="currency-field">
                 <span aria-hidden="true">R$</span>
                 <input
-                  id="new-service-order-amount"
+                  id="edit-service-order-amount"
                   value={amount}
                   onChange={(event) =>
                     setAmount(formatCurrencyInput(event.target.value))
@@ -183,21 +186,19 @@ export function NewServiceOrderModal({
                   inputMode="numeric"
                   disabled={isSubmitting}
                   required
+                  autoFocus
                 />
               </div>
             </div>
 
             <div className="form-field">
-              <div className="service-order-field-heading">
-                <label htmlFor="new-service-order-material-cost">
-                  Custo dos materiais
-                </label>
-                <span>Opcional</span>
-              </div>
+              <label htmlFor="edit-service-order-material-cost">
+                Custo dos materiais
+              </label>
               <div className="currency-field">
                 <span aria-hidden="true">R$</span>
                 <input
-                  id="new-service-order-material-cost"
+                  id="edit-service-order-material-cost"
                   value={materialCost}
                   onChange={(event) =>
                     setMaterialCost(formatCurrencyInput(event.target.value))
@@ -219,7 +220,6 @@ export function NewServiceOrderModal({
           >
             <div>
               <span>Mão de obra estimada</span>
-              <small>Calculada pelo valor cobrado menos os materiais.</small>
             </div>
             <strong>{formatCurrency(laborAmount)}</strong>
           </div>
@@ -244,7 +244,7 @@ export function NewServiceOrderModal({
               type="submit"
               disabled={isSubmitting}
             >
-              {isSubmitting ? 'Criando ordem...' : 'Criar ordem'}
+              {isSubmitting ? 'Salvando...' : 'Salvar valores'}
             </button>
           </div>
         </form>
