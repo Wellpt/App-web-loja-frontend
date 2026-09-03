@@ -1,27 +1,30 @@
 import { useEffect, useState, type FormEvent, type MouseEvent } from 'react'
-import { createServiceOrder } from '../api/serviceOrders'
 import { ApiError } from '../api/http'
-import type { Customer } from '../types/customer'
+import { updateServiceOrderValue } from '../api/serviceOrders'
 import type { ServiceOrder } from '../types/serviceOrder'
 import {
   currencyInputToNumber,
   formatCurrencyInput,
 } from '../utils/formatters'
 
-interface NewServiceOrderModalProps {
-  customers: Customer[]
+interface EditServiceOrderValueModalProps {
+  serviceOrder: ServiceOrder
   onClose: () => void
-  onCreated: (serviceOrder: ServiceOrder) => void
+  onUpdated: (serviceOrder: ServiceOrder) => void
 }
 
-export function NewServiceOrderModal({
-  customers,
+function getInitialAmount(value: number | null): string {
+  return value === null
+    ? ''
+    : formatCurrencyInput(String(Math.round(value * 100)))
+}
+
+export function EditServiceOrderValueModal({
+  serviceOrder,
   onClose,
-  onCreated,
-}: NewServiceOrderModalProps) {
-  const [customerId, setCustomerId] = useState('')
-  const [description, setDescription] = useState('')
-  const [amount, setAmount] = useState('')
+  onUpdated,
+}: EditServiceOrderValueModalProps) {
+  const [amount, setAmount] = useState(getInitialAmount(serviceOrder.valor))
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -53,40 +56,35 @@ export function NewServiceOrderModal({
     event.preventDefault()
     setError(null)
 
-    const selectedCustomerId = Number(customerId)
-    const serviceDescription = description.trim()
     const numericAmount = currencyInputToNumber(amount)
-
-    if (!Number.isInteger(selectedCustomerId) || selectedCustomerId <= 0) {
-      setError('Selecione o cliente desta ordem de serviço.')
-      return
-    }
-
-    if (!serviceDescription) {
-      setError('Descreva o serviço que será realizado.')
-      return
-    }
 
     if (numericAmount <= 0) {
       setError('Informe um valor maior que zero.')
       return
     }
 
+    if (
+      serviceOrder.valor !== null &&
+      Math.round(numericAmount * 100) ===
+        Math.round(serviceOrder.valor * 100)
+    ) {
+      setError('Altere o valor antes de salvar.')
+      return
+    }
+
     setIsSubmitting(true)
 
     try {
-      const serviceOrder = await createServiceOrder({
-        cliente_id: selectedCustomerId,
-        descricao_servico: serviceDescription,
+      const updatedOrder = await updateServiceOrderValue(serviceOrder.id, {
         valor: numericAmount,
       })
-      onCreated(serviceOrder)
+      onUpdated(updatedOrder)
       onClose()
     } catch (requestError) {
       setError(
         requestError instanceof ApiError
           ? requestError.message
-          : 'Não foi possível criar a ordem. Tente novamente.',
+          : 'Não foi possível alterar o valor. Tente novamente.',
       )
     } finally {
       setIsSubmitting(false)
@@ -99,12 +97,15 @@ export function NewServiceOrderModal({
         className="customer-modal service-order-modal"
         role="dialog"
         aria-modal="true"
-        aria-labelledby="new-order-modal-title"
+        aria-labelledby="edit-order-value-modal-title"
+        aria-describedby="edit-order-value-help"
       >
         <div className="modal-header">
           <div>
-            <p className="eyebrow">Nova solicitação</p>
-            <h2 id="new-order-modal-title">Nova ordem de serviço</h2>
+            <p className="eyebrow">Valor do serviço</p>
+            <h2 id="edit-order-value-modal-title">
+              Alterar valor da ordem #{serviceOrder.id}
+            </h2>
           </div>
           <button
             className="modal-close"
@@ -117,45 +118,23 @@ export function NewServiceOrderModal({
           </button>
         </div>
 
+        <div className="order-summary">
+          <span>{serviceOrder.cliente.nome}</span>
+          <p>{serviceOrder.descricao_servico}</p>
+        </div>
+
+        <p className="irreversible-warning" id="edit-order-value-help">
+          O valor pode ser alterado somente enquanto a ordem estiver aberta.
+          Após a conclusão, ele será definitivo.
+        </p>
+
         <form className="service-order-form" onSubmit={handleSubmit}>
           <div className="form-field">
-            <label htmlFor="service-order-customer">Cliente</label>
-            <select
-              id="service-order-customer"
-              value={customerId}
-              onChange={(event) => setCustomerId(event.target.value)}
-              disabled={isSubmitting}
-              required
-              autoFocus
-            >
-              <option value="">Selecione um cliente</option>
-              {customers.map((customer) => (
-                <option key={customer.id} value={customer.id}>
-                  {customer.nome}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="form-field">
-            <label htmlFor="service-order-description">Descrição do serviço</label>
-            <textarea
-              id="service-order-description"
-              value={description}
-              onChange={(event) => setDescription(event.target.value)}
-              placeholder="Descreva o que precisa ser feito"
-              rows={5}
-              disabled={isSubmitting}
-              required
-            />
-          </div>
-
-          <div className="form-field">
-            <label htmlFor="new-service-order-amount">Valor cobrado</label>
+            <label htmlFor="edit-service-order-amount">Valor cobrado</label>
             <div className="currency-field">
               <span aria-hidden="true">R$</span>
               <input
-                id="new-service-order-amount"
+                id="edit-service-order-amount"
                 value={amount}
                 onChange={(event) =>
                   setAmount(formatCurrencyInput(event.target.value))
@@ -164,6 +143,7 @@ export function NewServiceOrderModal({
                 inputMode="numeric"
                 disabled={isSubmitting}
                 required
+                autoFocus
               />
             </div>
           </div>
@@ -188,7 +168,7 @@ export function NewServiceOrderModal({
               type="submit"
               disabled={isSubmitting}
             >
-              {isSubmitting ? 'Criando ordem...' : 'Criar ordem'}
+              {isSubmitting ? 'Salvando...' : 'Salvar valor'}
             </button>
           </div>
         </form>
