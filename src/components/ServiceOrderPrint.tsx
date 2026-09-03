@@ -28,9 +28,9 @@ export function ServiceOrderPrint({
     <article className="service-order-print">
       <header className="print-header">
         <div className="print-brand">
-          <span aria-hidden="true">AL</span>
+          <span aria-hidden="true">VT</span>
           <div>
-            <strong>App Web Loja</strong>
+            <strong>VTcell</strong>
             <small>Documento de acompanhamento do serviço</small>
           </div>
         </div>
@@ -149,7 +149,7 @@ export function ServiceOrderPrint({
       </section>
 
       <footer className="print-footer">
-        <span>App Web Loja</span>
+        <span>VTcell</span>
         <span>Emitido em {formatDateTime(new Date().toISOString())}</span>
       </footer>
     </article>,

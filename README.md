@@ -1,6 +1,6 @@
-# App Web Loja - Frontend
+# VTcell - Frontend
 
-Frontend da aplicação App Web Loja, criado com React, TypeScript e Vite.
+Frontend da aplicação VTcell, criado com React, TypeScript e Vite.
 
 ## Requisitos
 
