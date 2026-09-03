@@ -11,6 +11,8 @@ export interface ServiceOrder {
   descricao_servico: string
   status: ServiceOrderStatus
   valor: number | null
+  custo_materiais: number
+  valor_mao_de_obra: number | null
   forma_pagamento: string | null
   criada_em: string
   concluida_em: string | null
@@ -20,10 +22,12 @@ export interface CreateServiceOrderInput {
   cliente_id: number
   descricao_servico: string
   valor: number
+  custo_materiais?: number
 }
 
-export interface UpdateServiceOrderValueInput {
-  valor: number
+export interface UpdateServiceOrderFinancialsInput {
+  valor?: number
+  custo_materiais?: number
 }
 
 export interface CompleteServiceOrderInput {
