@@ -22,10 +22,7 @@ export function ServiceOrderPrint({
   customer,
 }: ServiceOrderPrintProps) {
   const isCompleted = serviceOrder.status === 'concluida'
-  const hasPayment =
-    isCompleted &&
-    serviceOrder.valor !== null &&
-    serviceOrder.forma_pagamento
+  const amount = serviceOrder.valor
 
   return createPortal(
     <article className="service-order-print">
@@ -117,21 +114,25 @@ export function ServiceOrderPrint({
       </section>
 
       <section className="print-section print-payment-section">
-        <h2>Recebimento</h2>
-        {hasPayment ? (
+        <h2>Valor e recebimento</h2>
+        {amount !== null ? (
           <div className="print-payment">
             <div>
-              <span>Valor recebido</span>
-              <strong>{formatCurrency(serviceOrder.valor as number)}</strong>
+              <span>Valor cobrado</span>
+              <strong>{formatCurrency(amount)}</strong>
             </div>
             <div>
-              <span>Forma de pagamento</span>
-              <strong>{serviceOrder.forma_pagamento}</strong>
+              <span>Situação do pagamento</span>
+              <strong>
+                {isCompleted && serviceOrder.forma_pagamento
+                  ? 'Recebido — ' + serviceOrder.forma_pagamento
+                  : 'Pendente'}
+              </strong>
             </div>
           </div>
         ) : (
           <p className="print-payment-pending">
-            Pagamento pendente — ordem ainda não concluída.
+            Valor não informado — atualize esta ordem antes da conclusão.
           </p>
         )}
       </section>

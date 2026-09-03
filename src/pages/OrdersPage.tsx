@@ -4,12 +4,11 @@ import { getCustomers } from '../api/customers'
 import { ApiError } from '../api/http'
 import { getServiceOrders } from '../api/serviceOrders'
 import { CompleteServiceOrderModal } from '../components/CompleteServiceOrderModal'
+import { EditServiceOrderValueModal } from '../components/EditServiceOrderValueModal'
 import { NewServiceOrderModal } from '../components/NewServiceOrderModal'
 import { ServiceOrderPrint } from '../components/ServiceOrderPrint'
 import type { Customer } from '../types/customer'
 import type {
-  CompletedServiceOrder,
-  CreatedServiceOrder,
   ServiceOrder,
   ServiceOrderStatus,
 } from '../types/serviceOrder'
@@ -37,6 +36,8 @@ export function OrdersPage() {
   const [activeTab, setActiveTab] = useState<OrderTab>('aberta')
   const [isNewOrderOpen, setIsNewOrderOpen] = useState(false)
   const [orderToComplete, setOrderToComplete] =
+    useState<ServiceOrder | null>(null)
+  const [orderToEditValue, setOrderToEditValue] =
     useState<ServiceOrder | null>(null)
   const [orderToPrint, setOrderToPrint] = useState<ServiceOrder | null>(null)
 
@@ -111,48 +112,33 @@ export function OrdersPage() {
     setOrderToComplete(null)
   }, [])
 
-  const handleOrderCreated = useCallback(
-    (createdOrder: CreatedServiceOrder) => {
-      const customer = customers.find(
-        (item) => item.id === createdOrder.cliente_id,
+  const closeValueEdition = useCallback(() => {
+    setOrderToEditValue(null)
+  }, [])
+
+  const handleOrderCreated = useCallback((createdOrder: ServiceOrder) => {
+    setServiceOrders((currentOrders) => [createdOrder, ...currentOrders])
+    setActiveTab('aberta')
+    setNotice('Ordem #' + createdOrder.id + ' criada com sucesso.')
+  }, [])
+
+  const handleOrderValueUpdated = useCallback(
+    (updatedOrder: ServiceOrder) => {
+      setServiceOrders((currentOrders) =>
+        currentOrders.map((order) =>
+          order.id === updatedOrder.id ? updatedOrder : order,
+        ),
       )
-
-      const newOrder: ServiceOrder = {
-        id: createdOrder.id,
-        cliente: {
-          id: createdOrder.cliente_id,
-          nome: customer?.nome ?? 'Cliente #' + createdOrder.cliente_id,
-        },
-        descricao_servico: createdOrder.descricao_servico,
-        status: createdOrder.status,
-        valor: null,
-        forma_pagamento: null,
-        criada_em: createdOrder.criada_em,
-        concluida_em: null,
-      }
-
-      setServiceOrders((currentOrders) => [newOrder, ...currentOrders])
-      setActiveTab('aberta')
-      setNotice('Ordem #' + createdOrder.id + ' criada com sucesso.')
+      setNotice('Valor da ordem #' + updatedOrder.id + ' atualizado.')
     },
-    [customers],
+    [],
   )
 
   const handleOrderCompleted = useCallback(
-    (completedOrder: CompletedServiceOrder) => {
+    (completedOrder: ServiceOrder) => {
       setServiceOrders((currentOrders) =>
         currentOrders.map((order) =>
-          order.id === completedOrder.id
-            ? {
-                ...order,
-                descricao_servico: completedOrder.descricao_servico,
-                status: completedOrder.status,
-                valor: completedOrder.valor,
-                forma_pagamento: completedOrder.forma_pagamento,
-                criada_em: completedOrder.criada_em,
-                concluida_em: completedOrder.concluida_em,
-              }
-            : order,
+          order.id === completedOrder.id ? completedOrder : order,
         ),
       )
       setActiveTab('concluida')
@@ -314,7 +300,11 @@ export function OrdersPage() {
                   <th>Cliente e serviço</th>
                   <th>Data</th>
                   <th>Status</th>
-                  <th>Recebimento</th>
+                  <th>
+                    {activeTab === 'aberta'
+                      ? 'Valor cobrado'
+                      : 'Recebimento'}
+                  </th>
                   <th>
                     <span className="visually-hidden">Ações</span>
                   </th>
@@ -355,28 +345,53 @@ export function OrdersPage() {
                         {getStatusLabel(order.status)}
                       </span>
                     </td>
-                    <td data-label="Recebimento">
-                      {order.status === 'concluida' &&
-                      order.valor !== null &&
-                      order.forma_pagamento ? (
+                    <td
+                      data-label={
+                        activeTab === 'aberta'
+                          ? 'Valor cobrado'
+                          : 'Recebimento'
+                      }
+                    >
+                      {order.valor !== null ? (
                         <div className="order-payment">
                           <strong>{formatCurrency(order.valor)}</strong>
-                          <span>{order.forma_pagamento}</span>
+                          <span>
+                            {order.status === 'concluida'
+                              ? order.forma_pagamento
+                              : 'Pagamento pendente'}
+                          </span>
                         </div>
                       ) : (
-                        <span className="pending-payment">Pendente</span>
+                        <span className="pending-payment">
+                          Valor não informado
+                        </span>
                       )}
                     </td>
                     <td className="order-action-cell" data-label="Ações">
                       <div className="order-actions">
                         {order.status === 'aberta' && (
-                          <button
-                            className="complete-order-button"
-                            type="button"
-                            onClick={() => setOrderToComplete(order)}
-                          >
-                            Concluir
-                          </button>
+                          <>
+                            <button
+                              className="edit-order-value-button"
+                              type="button"
+                              onClick={() => setOrderToEditValue(order)}
+                            >
+                              Editar valor
+                            </button>
+                            <button
+                              className="complete-order-button"
+                              type="button"
+                              onClick={() => setOrderToComplete(order)}
+                              disabled={order.valor === null}
+                              title={
+                                order.valor === null
+                                  ? 'Informe o valor antes de concluir'
+                                  : undefined
+                              }
+                            >
+                              Concluir
+                            </button>
+                          </>
                         )}
                         <button
                           className="print-order-button"
@@ -401,6 +416,14 @@ export function OrdersPage() {
           customers={customers}
           onClose={closeNewOrder}
           onCreated={handleOrderCreated}
+        />
+      )}
+
+      {orderToEditValue && (
+        <EditServiceOrderValueModal
+          serviceOrder={orderToEditValue}
+          onClose={closeValueEdition}
+          onUpdated={handleOrderValueUpdated}
         />
       )}
 

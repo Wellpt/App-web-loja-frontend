@@ -1,19 +1,13 @@
 import { useEffect, useState, type FormEvent, type MouseEvent } from 'react'
 import { ApiError } from '../api/http'
 import { completeServiceOrder } from '../api/serviceOrders'
-import type {
-  CompletedServiceOrder,
-  ServiceOrder,
-} from '../types/serviceOrder'
-import {
-  currencyInputToNumber,
-  formatCurrencyInput,
-} from '../utils/formatters'
+import type { ServiceOrder } from '../types/serviceOrder'
+import { formatCurrency } from '../utils/formatters'
 
 interface CompleteServiceOrderModalProps {
   serviceOrder: ServiceOrder
   onClose: () => void
-  onCompleted: (serviceOrder: CompletedServiceOrder) => void
+  onCompleted: (serviceOrder: ServiceOrder) => void
 }
 
 export function CompleteServiceOrderModal({
@@ -21,7 +15,6 @@ export function CompleteServiceOrderModal({
   onClose,
   onCompleted,
 }: CompleteServiceOrderModalProps) {
-  const [amount, setAmount] = useState('')
   const [paymentMethod, setPaymentMethod] = useState('')
   const [isConfirmed, setIsConfirmed] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -55,13 +48,7 @@ export function CompleteServiceOrderModal({
     event.preventDefault()
     setError(null)
 
-    const numericAmount = currencyInputToNumber(amount)
     const trimmedPaymentMethod = paymentMethod.trim()
-
-    if (numericAmount <= 0) {
-      setError('Informe um valor maior que zero.')
-      return
-    }
 
     if (!trimmedPaymentMethod) {
       setError('Informe a forma de pagamento.')
@@ -77,8 +64,6 @@ export function CompleteServiceOrderModal({
 
     try {
       const completedOrder = await completeServiceOrder(serviceOrder.id, {
-        status: 'concluida',
-        valor: numericAmount,
         forma_pagamento: trimmedPaymentMethod,
       })
       onCompleted(completedOrder)
@@ -124,6 +109,11 @@ export function CompleteServiceOrderModal({
         <div className="order-summary">
           <span>{serviceOrder.cliente.nome}</span>
           <p>{serviceOrder.descricao_servico}</p>
+          <strong className="order-summary-amount">
+            {serviceOrder.valor === null
+              ? 'Valor não informado'
+              : 'Valor cobrado: ' + formatCurrency(serviceOrder.valor)}
+          </strong>
         </div>
 
         <p className="irreversible-warning" id="complete-order-warning">
@@ -131,25 +121,6 @@ export function CompleteServiceOrderModal({
         </p>
 
         <form className="service-order-form" onSubmit={handleSubmit}>
-          <div className="form-field">
-            <label htmlFor="service-order-amount">Valor recebido</label>
-            <div className="currency-field">
-              <span aria-hidden="true">R$</span>
-              <input
-                id="service-order-amount"
-                value={amount}
-                onChange={(event) =>
-                  setAmount(formatCurrencyInput(event.target.value))
-                }
-                placeholder="0,00"
-                inputMode="numeric"
-                disabled={isSubmitting}
-                required
-                autoFocus
-              />
-            </div>
-          </div>
-
           <div className="form-field">
             <label htmlFor="service-order-payment">Forma de pagamento</label>
             <input
@@ -162,6 +133,7 @@ export function CompleteServiceOrderModal({
               autoComplete="off"
               disabled={isSubmitting}
               required
+              autoFocus
             />
             <datalist id="payment-method-suggestions">
               <option value="Pix" />
@@ -181,7 +153,8 @@ export function CompleteServiceOrderModal({
               required
             />
             <span>
-              Confirmo o recebimento e desejo concluir esta ordem.
+              Confirmo o recebimento do valor informado e desejo concluir esta
+              ordem.
             </span>
           </label>
 
