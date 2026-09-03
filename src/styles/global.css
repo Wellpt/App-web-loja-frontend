@@ -2240,6 +2240,64 @@ a {
   letter-spacing: -0.045em;
 }
 
+.balance-card-breakdown {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.balance-card-breakdown > div {
+  min-width: 0;
+  border: 1px solid #e3eae5;
+  border-radius: 13px;
+  padding: 13px;
+  background: #fbfcfb;
+}
+
+.balance-breakdown-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 0.67rem;
+  font-weight: 750;
+}
+
+.balance-breakdown-label i {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 7px;
+  border-radius: 50%;
+}
+
+.balance-breakdown-label i.is-service {
+  background: var(--green-600);
+}
+
+.balance-breakdown-label i.is-sale {
+  background: #8bc5a1;
+}
+
+.balance-card-breakdown strong,
+.balance-card-breakdown small {
+  display: block;
+}
+
+.balance-card-breakdown strong {
+  overflow-wrap: anywhere;
+  margin-top: 9px;
+  color: var(--green-950);
+  font-size: 0.9rem;
+}
+
+.balance-card-breakdown small {
+  margin-top: 5px;
+  color: #87928b;
+  font-size: 0.61rem;
+  line-height: 1.4;
+}
+
 .balance-card-footer {
   display: flex;
   min-height: 46px;
@@ -2376,6 +2434,12 @@ a {
   }
 }
 
+@media (max-width: 1100px) {
+  .balance-cards-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 .secondary-action:focus-visible,
 .dashboard-load-error button:focus-visible {
   outline: 3px solid rgb(47 118 85 / 30%);
@@ -2423,6 +2487,12 @@ a {
 
   .dashboard-load-error button {
     width: 100%;
+  }
+}
+
+@media (max-width: 460px) {
+  .balance-card-breakdown {
+    grid-template-columns: 1fr;
   }
 }
 

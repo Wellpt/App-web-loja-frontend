@@ -119,7 +119,7 @@ export function DashboardPage() {
       value: snapshot?.balances
         ? formatCurrency(snapshot.balances.diario.valor_total)
         : '—',
-      note: 'Balanço diário',
+      note: 'Serviços e vendas',
       isFinancial: true,
     },
     {
@@ -127,7 +127,7 @@ export function DashboardPage() {
       value: snapshot?.balances
         ? formatCurrency(snapshot.balances.semanal.valor_total)
         : '—',
-      note: 'Desde segunda-feira',
+      note: 'Serviços e vendas desde segunda-feira',
       isFinancial: true,
     },
     {
@@ -135,7 +135,7 @@ export function DashboardPage() {
       value: snapshot?.balances
         ? formatCurrency(snapshot.balances.mensal.valor_total)
         : '—',
-      note: 'Desde o primeiro dia',
+      note: 'Serviços e vendas desde o primeiro dia',
       isFinancial: true,
     },
     {
