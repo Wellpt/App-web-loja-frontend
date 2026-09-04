@@ -18,6 +18,11 @@ npm run dev
 O Vite inicia o frontend e encaminha chamadas feitas para `/api` ao backend
 local, removendo esse prefixo antes de enviar a requisição.
 
+O projeto funciona localmente sem criar um arquivo de ambiente. Para
+personalizar a configuração, copie `.env.example` para `.env.local`. Arquivos
+`.env` locais não devem ser commitados, e variáveis com prefixo `VITE_` nunca
+devem conter informações sensíveis porque são incluídas no bundle público.
+
 ## Publicação no GitHub Pages
 
 O workflow **.github/workflows/deploy-pages.yml** gera e publica o frontend em:
@@ -43,6 +48,14 @@ npm run lint     # análise estática
 npm run build    # build de produção
 npm run preview  # visualização do build
 ```
+
+## Documentação
+
+- [Histórico de alterações](CHANGELOG.md)
+- [Contratos consumidos pelo frontend](docs/frontend-contracts.md)
+
+Atualize esses documentos sempre que uma US alterar regras de negócio, contratos
+da API, permissões ou o processo de publicação.
 
 ## Estrutura
 
@@ -101,7 +114,7 @@ A US04 implementa o fluxo de ordens de serviço:
 
 - listagem por status, com ordens abertas e concluídas
 - criação de ordem vinculada a um cliente
-- conclusão definitiva com valor e forma de pagamento
+- conclusão definitiva com registro do recebimento
 - atualização imediata da interface após cada operação
 - estados de carregamento, erro e lista vazia
 - tabela responsiva para dispositivos móveis
@@ -109,7 +122,7 @@ A US04 implementa o fluxo de ordens de serviço:
 A US05 implementa os balanços e conclui a visão geral:
 
 - balanços diário, semanal e mensal integrados à API
-- totais e quantidades calculados somente com ordens concluídas
+- estrutura inicial de totais e quantidades de ordens concluídas
 - atualização manual dos indicadores financeiros
 - visão geral com valores recebidos e quantidade de ordens abertas
 - estados de carregamento e recuperação de erro
@@ -170,5 +183,37 @@ A US12 antecipa o valor da ordem de serviço:
 - conclusão solicitando apenas a forma de pagamento
 - suporte a ordens antigas ainda sem valor
 - impressão com valor cobrado e situação do pagamento
+
+A US13 atualiza a identidade visual:
+
+- nome da aplicação alterado para VTcell
+- iniciais, título do navegador e favicon atualizados
+- nova marca aplicada ao login, layout autenticado e impressão da OS
+- nomes técnicos do repositório e URL do GitHub Pages preservados
+
+A US14 implementa o fluxo de vendas:
+
+- cadastro de venda com cliente opcional
+- múltiplos itens com descrição, quantidade e valor unitário
+- cálculo de subtotais e total confirmado pelo backend
+- registro da forma de pagamento e do funcionário autenticado
+- histórico da venda mais recente para a mais antiga
+- vendas concluídas sem edição, cancelamento ou exclusão
+
+A US15 adiciona os custos das ordens de serviço:
+
+- custo de materiais opcional na abertura da OS
+- cálculo da mão de obra pelo valor cobrado menos os materiais
+- alteração do valor, do custo ou de ambos enquanto a OS estiver aberta
+- exibição dos valores internos na área de ordens
+- custos e mão de obra omitidos do documento impresso para o cliente
+
+A US16 amplia os balanços:
+
+- separação entre quantidade e valor de serviços e vendas
+- faturamento total composto por serviços mais vendas
+- ordens contabilizadas somente após a conclusão
+- vendas contabilizadas no momento do cadastro
+- custos e mão de obra sem desconto no faturamento apresentado
 
 Testes automatizados não fazem parte desta fase do projeto.

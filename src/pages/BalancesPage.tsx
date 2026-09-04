@@ -47,6 +47,10 @@ function getOrderCountLabel(count: number): string {
   return count === 1 ? '1 ordem concluída' : count + ' ordens concluídas'
 }
 
+function getSaleCountLabel(count: number): string {
+  return count === 1 ? '1 venda concluída' : count + ' vendas concluídas'
+}
+
 function formatUpdateTime(date: Date): string {
   return new Intl.DateTimeFormat('pt-BR', {
     hour: '2-digit',
@@ -105,9 +109,7 @@ export function BalancesPage() {
         <div>
           <p className="eyebrow">Financeiro</p>
           <h2>Balanços</h2>
-          <p>
-            Consulte o total recebido nas ordens de serviço concluídas.
-          </p>
+          <p>Consulte o faturamento recebido em serviços e vendas.</p>
         </div>
         <button
           className="secondary-action"
@@ -163,13 +165,34 @@ export function BalancesPage() {
                   </div>
 
                   <div className="balance-card-value">
-                    <span>Total recebido</span>
+                    <span>Faturamento total</span>
                     <strong>{formatCurrency(balance.valor_total)}</strong>
                   </div>
 
+                  <div className="balance-card-breakdown">
+                    <div>
+                      <span className="balance-breakdown-label">
+                        <i className="is-service" aria-hidden="true" />
+                        Serviços
+                      </span>
+                      <strong>{formatCurrency(balance.valor_servicos)}</strong>
+                      <small>
+                        {getOrderCountLabel(balance.quantidade_ordens)}
+                      </small>
+                    </div>
+                    <div>
+                      <span className="balance-breakdown-label">
+                        <i className="is-sale" aria-hidden="true" />
+                        Vendas
+                      </span>
+                      <strong>{formatCurrency(balance.valor_vendas)}</strong>
+                      <small>{getSaleCountLabel(balance.quantidade_vendas)}</small>
+                    </div>
+                  </div>
+
                   <div className="balance-card-footer">
-                    <span>{getOrderCountLabel(balance.quantidade_ordens)}</span>
-                    <span>Somente pagamentos integrais</span>
+                    <span>Receitas confirmadas</span>
+                    <span>Serviços + vendas</span>
                   </div>
                 </article>
               )
@@ -181,9 +204,10 @@ export function BalancesPage() {
               i
             </div>
             <div>
-              <strong>Como os valores são calculados?</strong>
+              <strong>Como o faturamento é calculado?</strong>
               <p>
-                Entram no balanço somente ordens concluídas e pagas. Os
+                Ordens entram após a conclusão e vendas no momento do cadastro.
+                Custos de materiais e mão de obra não são descontados. Os
                 períodos seguem o fuso horário de São Paulo.
               </p>
             </div>

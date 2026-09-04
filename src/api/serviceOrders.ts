@@ -2,7 +2,7 @@ import type {
   CompleteServiceOrderInput,
   CreateServiceOrderInput,
   ServiceOrder,
-  UpdateServiceOrderValueInput,
+  UpdateServiceOrderFinancialsInput,
 } from '../types/serviceOrder'
 import { apiRequest } from './http'
 
@@ -39,9 +39,9 @@ export async function createServiceOrder(
   return response.ordem_servico
 }
 
-export async function updateServiceOrderValue(
+export async function updateServiceOrderFinancials(
   serviceOrderId: number,
-  input: UpdateServiceOrderValueInput,
+  input: UpdateServiceOrderFinancialsInput,
 ): Promise<ServiceOrder> {
   const response = await apiRequest<ServiceOrderResponse>(
     '/service-orders/' + serviceOrderId,

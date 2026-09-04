@@ -4,7 +4,7 @@ import { getCustomers } from '../api/customers'
 import { ApiError } from '../api/http'
 import { getServiceOrders } from '../api/serviceOrders'
 import { CompleteServiceOrderModal } from '../components/CompleteServiceOrderModal'
-import { EditServiceOrderValueModal } from '../components/EditServiceOrderValueModal'
+import { EditServiceOrderFinancialsModal } from '../components/EditServiceOrderFinancialsModal'
 import { NewServiceOrderModal } from '../components/NewServiceOrderModal'
 import { ServiceOrderPrint } from '../components/ServiceOrderPrint'
 import type { Customer } from '../types/customer'
@@ -27,6 +27,25 @@ function getStatusLabel(status: ServiceOrderStatus): string {
   return status === 'aberta' ? 'Aberta' : 'Concluída'
 }
 
+function getMaterialCost(serviceOrder: ServiceOrder): number {
+  return serviceOrder.custo_materiais ?? 0
+}
+
+function getLaborAmount(serviceOrder: ServiceOrder): number | null {
+  if (serviceOrder.valor_mao_de_obra != null) {
+    return serviceOrder.valor_mao_de_obra
+  }
+
+  return serviceOrder.valor === null
+    ? null
+    : serviceOrder.valor - getMaterialCost(serviceOrder)
+}
+
+function formatLaborAmount(serviceOrder: ServiceOrder): string {
+  const laborAmount = getLaborAmount(serviceOrder)
+  return laborAmount === null ? '—' : formatCurrency(laborAmount)
+}
+
 export function OrdersPage() {
   const [serviceOrders, setServiceOrders] = useState<ServiceOrder[]>([])
   const [customers, setCustomers] = useState<Customer[]>([])
@@ -37,7 +56,7 @@ export function OrdersPage() {
   const [isNewOrderOpen, setIsNewOrderOpen] = useState(false)
   const [orderToComplete, setOrderToComplete] =
     useState<ServiceOrder | null>(null)
-  const [orderToEditValue, setOrderToEditValue] =
+  const [orderToEditFinancials, setOrderToEditFinancials] =
     useState<ServiceOrder | null>(null)
   const [orderToPrint, setOrderToPrint] = useState<ServiceOrder | null>(null)
 
@@ -112,8 +131,8 @@ export function OrdersPage() {
     setOrderToComplete(null)
   }, [])
 
-  const closeValueEdition = useCallback(() => {
-    setOrderToEditValue(null)
+  const closeFinancialsEdition = useCallback(() => {
+    setOrderToEditFinancials(null)
   }, [])
 
   const handleOrderCreated = useCallback((createdOrder: ServiceOrder) => {
@@ -122,14 +141,14 @@ export function OrdersPage() {
     setNotice('Ordem #' + createdOrder.id + ' criada com sucesso.')
   }, [])
 
-  const handleOrderValueUpdated = useCallback(
+  const handleOrderFinancialsUpdated = useCallback(
     (updatedOrder: ServiceOrder) => {
       setServiceOrders((currentOrders) =>
         currentOrders.map((order) =>
           order.id === updatedOrder.id ? updatedOrder : order,
         ),
       )
-      setNotice('Valor da ordem #' + updatedOrder.id + ' atualizado.')
+      setNotice('Valores da ordem #' + updatedOrder.id + ' atualizados.')
     },
     [],
   )
@@ -300,11 +319,7 @@ export function OrdersPage() {
                   <th>Cliente e serviço</th>
                   <th>Data</th>
                   <th>Status</th>
-                  <th>
-                    {activeTab === 'aberta'
-                      ? 'Valor cobrado'
-                      : 'Recebimento'}
-                  </th>
+                  <th>Valores</th>
                   <th>
                     <span className="visually-hidden">Ações</span>
                   </th>
@@ -345,17 +360,24 @@ export function OrdersPage() {
                         {getStatusLabel(order.status)}
                       </span>
                     </td>
-                    <td
-                      data-label={
-                        activeTab === 'aberta'
-                          ? 'Valor cobrado'
-                          : 'Recebimento'
-                      }
-                    >
+                    <td data-label="Valores">
                       {order.valor !== null ? (
-                        <div className="order-payment">
-                          <strong>{formatCurrency(order.valor)}</strong>
-                          <span>
+                        <div className="order-financials">
+                          <div className="order-financial-main">
+                            <span>Valor cobrado</span>
+                            <strong>{formatCurrency(order.valor)}</strong>
+                          </div>
+                          <dl>
+                            <div>
+                              <dt>Materiais</dt>
+                              <dd>{formatCurrency(getMaterialCost(order))}</dd>
+                            </div>
+                            <div>
+                              <dt>Mão de obra</dt>
+                              <dd>{formatLaborAmount(order)}</dd>
+                            </div>
+                          </dl>
+                          <span className="order-payment-status">
                             {order.status === 'concluida'
                               ? order.forma_pagamento
                               : 'Pagamento pendente'}
@@ -372,11 +394,11 @@ export function OrdersPage() {
                         {order.status === 'aberta' && (
                           <>
                             <button
-                              className="edit-order-value-button"
+                              className="edit-order-values-button"
                               type="button"
-                              onClick={() => setOrderToEditValue(order)}
+                              onClick={() => setOrderToEditFinancials(order)}
                             >
-                              Editar valor
+                              Editar valores
                             </button>
                             <button
                               className="complete-order-button"
@@ -419,11 +441,11 @@ export function OrdersPage() {
         />
       )}
 
-      {orderToEditValue && (
-        <EditServiceOrderValueModal
-          serviceOrder={orderToEditValue}
-          onClose={closeValueEdition}
-          onUpdated={handleOrderValueUpdated}
+      {orderToEditFinancials && (
+        <EditServiceOrderFinancialsModal
+          serviceOrder={orderToEditFinancials}
+          onClose={closeFinancialsEdition}
+          onUpdated={handleOrderFinancialsUpdated}
         />
       )}
 
