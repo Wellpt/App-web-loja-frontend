@@ -4,6 +4,16 @@ Este arquivo registra as mudanças funcionais e operacionais relevantes do
 frontend. Os commits e pull requests permanecem como fonte dos detalhes de
 implementação e revisão.
 
+## 2026-10-01 — Histórico mensal de balanços
+
+- Adicionado seletor com os 12 meses do ano na área de balanços.
+- O mês anterior é selecionado inicialmente para facilitar consultas após a
+  virada do mês.
+- Adicionada navegação entre anos, mantendo meses futuros indisponíveis.
+- A consulta mensal passou a enviar `ano` e `mes` pelo endpoint existente
+  `/balances`.
+- Mantidos os cartões de faturamento do dia, da semana e do mês atual.
+
 ## 2026-09-03 — Release 20260903
 
 ### Vendas — US14

@@ -2,6 +2,8 @@ export type BalancePeriod = 'diario' | 'semanal' | 'mensal'
 
 export interface Balance {
   periodo: BalancePeriod
+  ano?: number
+  mes?: number
   quantidade_ordens: number
   valor_servicos: number
   quantidade_vendas: number
