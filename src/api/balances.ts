@@ -9,16 +9,36 @@ interface BalanceResponse {
   balanco: Balance
 }
 
+interface MonthlyBalanceReference {
+  year: number
+  month: number
+}
+
 export async function getBalance(
   period: BalancePeriod,
   signal?: AbortSignal,
+  reference?: MonthlyBalanceReference,
 ): Promise<Balance> {
+  const query = new URLSearchParams({ periodo: period })
+  if (reference) {
+    query.set('ano', String(reference.year))
+    query.set('mes', String(reference.month))
+  }
+
   const response = await apiRequest<BalanceResponse>(
-    '/balances?periodo=' + period,
+    '/balances?' + query.toString(),
     { signal },
   )
 
   return response.balanco
+}
+
+export function getMonthlyBalance(
+  year: number,
+  month: number,
+  signal?: AbortSignal,
+): Promise<Balance> {
+  return getBalance('mensal', signal, { year, month })
 }
 
 export async function getBalances(

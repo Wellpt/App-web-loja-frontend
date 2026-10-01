@@ -1,6 +1,6 @@
 # Contratos consumidos pelo frontend
 
-Última atualização: 2026-09-03.
+Última atualização: 2026-10-01.
 
 Este documento registra os contratos que orientam a integração do frontend da
 VTcell. Ele deve ser atualizado no mesmo PR sempre que um endpoint, campo,
@@ -353,6 +353,7 @@ Esta área é exclusiva do perfil `empresario`.
 GET /balances?periodo=diario
 GET /balances?periodo=semanal
 GET /balances?periodo=mensal
+GET /balances?periodo=mensal&ano=2026&mes=9
 ```
 
 Resposta:
@@ -360,7 +361,9 @@ Resposta:
 ```json
 {
   "balanco": {
-    "periodo": "diario",
+    "periodo": "mensal",
+    "ano": 2026,
+    "mes": 9,
     "quantidade_ordens": 2,
     "valor_servicos": 500,
     "quantidade_vendas": 3,
@@ -375,6 +378,12 @@ Resposta:
 - `valor_total = valor_servicos + valor_vendas`.
 - Custos e mão de obra não alteram o faturamento apresentado.
 - Os períodos seguem o fuso horário de São Paulo.
+- `ano` e `mes` são opcionais e devem ser enviados juntos.
+- `ano` e `mes` são aceitos somente com `periodo=mensal`.
+- Sem esses parâmetros, o período mensal continua representando o mês atual.
+- Meses anteriores usam o intervalo completo; o mês atual termina no momento
+  da consulta.
+- Meses futuros e anos anteriores a 2000 retornam erro `400`.
 
 ## Publicação
 

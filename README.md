@@ -216,4 +216,12 @@ A US16 amplia os balanços:
 - vendas contabilizadas no momento do cadastro
 - custos e mão de obra sem desconto no faturamento apresentado
 
+A US17 adiciona o histórico mensal:
+
+- seleção entre os 12 meses do ano
+- mês anterior selecionado inicialmente
+- navegação para anos anteriores
+- consulta por `periodo=mensal`, `ano` e `mes` no endpoint existente
+- meses futuros indisponíveis para seleção
+
 Testes automatizados não fazem parte desta fase do projeto.
