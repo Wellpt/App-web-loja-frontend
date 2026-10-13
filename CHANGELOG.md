@@ -4,6 +4,10 @@ Este arquivo registra as mudanças funcionais e operacionais relevantes do
 frontend. Os commits e pull requests permanecem como fonte dos detalhes de
 implementação e revisão.
 
+## 2026-10-13 — Alinhamento dos botões de ajuste de estoque
+
+- Removida a margem superior herdada do botão Cancelar e igualada sua altura mínima à do botão Confirmar ajuste, somente na seção de ajuste de estoque.
+
 ## 2026-10-11 — US18 — Produtos e estoque
 
 - Reduzidos os espaços verticais do login em desktop com até 800px de altura, preservando o layout mobile e a rolagem quando necessária para acessar o conteúdo.

@@ -1,5 +1,6 @@
 .inventory-page { display: grid; gap: 24px; }
 .inventory-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.inventory-adjustment .inventory-actions > .retry-button { margin-top: 0; min-height: 46px; }
 .inventory-table-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .inventory-action-button {
   display: inline-flex;
