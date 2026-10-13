@@ -1,6 +1,6 @@
 # Contratos consumidos pelo frontend
 
-Última atualização: 2026-10-01.
+Última atualização: 2026-10-11.
 
 Este documento registra os contratos que orientam a integração do frontend da
 VTcell. Ele deve ser atualizado no mesmo PR sempre que um endpoint, campo,
@@ -37,6 +37,8 @@ permissão ou regra de negócio mudar.
 | Vendas | Sim | Sim |
 | Balanços | Não | Sim |
 | Funcionários | Não | Sim |
+| Gerenciar estoque | Não | Sim |
+| Consultar produtos para venda | Sim, sem custo/percentual | Sim |
 
 As restrições de balanços e funcionários existem no menu, nas rotas do
 frontend e no backend.
@@ -345,7 +347,30 @@ GET /sales
 A resposta possui `vendas` da mais recente para a mais antiga. Quando não
 existirem registros, `vendas` será um array vazio.
 
-## Balanços
+## Produtos e estoque — US18 / backend US24
+
+- `GET /products` retorna `{ "produtos": [...] }`. O parâmetro opcional `codigo_barras` filtra por código exato.
+- Produto: `id`, `codigo_barras` (texto), `descricao`, `quantidade_estoque` (inteiro), `valor_venda` (número).
+- Somente empresário recebe `valor_custo` e `percentual`; estes campos são opcionais no tipo compartilhado.
+- `POST /products` envia `codigo_barras`, `descricao`, `quantidade_estoque`, `valor_custo`, `percentual`.
+- `PATCH /products/{id}` envia `codigo_barras`, `descricao`, `valor_custo`, `percentual`, sem quantidade.
+- `POST /products/{id}/stock` envia `quantidade` como delta positivo/negativo e `motivo` obrigatório.
+- As três operações de escrita são exclusivas do empresário e retornam `{ "produto": {...} }`.
+- Preço final = custo × (1 + percentual / 100), arredondado para centavos. O servidor é a autoridade do cálculo.
+- Tanto `POST /products` quanto `PATCH /products/{id}` aceitam `valor_venda` no lugar de `percentual`. Enviar exatamente um dos dois. Quando o preço é informado, o servidor o preserva e calcula o percentual = (preço / custo - 1) × 100, arredondado a duas casas. Preço abaixo do custo retorna 400.
+- O formulário permite editar os dois campos, mas envia apenas o último editado. Na edição de um produto existente, o preço salvo é a referência inicial para evitar perdas por arredondamento.
+- Custo deve ser positivo; percentual de 0 a 10.000 com até duas casas; quantidade inteira de 0 a 1 bilhão; preço final até R$ 9.999.999.999,99.
+- Código duplicado e saldo insuficiente retornam 409; dados inválidos retornam 400.
+
+### Extensão dos itens de venda
+
+Itens cadastrados enviam `produto_id`, `quantidade` e `valor_unitario` esperado; `descricao` pode ser enviada por compatibilidade, mas o servidor usa a descrição do produto. Preço diferente do atual retorna 409, exigindo atualização e revisão pelo atendente.
+
+O retorno de cada item inclui `produto_id: number | null`. Sem produto, mantém-se o contrato de item avulso. A baixa de todos os produtos e o registro da venda são atômicos. O saldo nunca fica negativo, mesmo com vendas concorrentes ou produtos repetidos no carrinho.
+
+A leitura de código termina com Enter no campo de busca, adicionando o produto sem enviar o formulário. Nova leitura incrementa a quantidade. Leitores físicos devem operar em modo teclado e serão validados quando disponíveis.
+
+## Balanços (contrato mantido)
 
 Esta área é exclusiva do perfil `empresario`.
 

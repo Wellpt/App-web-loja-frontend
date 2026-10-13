@@ -8,6 +8,8 @@ import {
 import { getCustomers } from '../api/customers'
 import { ApiError } from '../api/http'
 import { createSale, getSales } from '../api/sales'
+import { getProducts } from '../api/products'
+import type { Product } from '../types/product'
 import type { Customer } from '../types/customer'
 import type { CreateSaleItemInput, Sale } from '../types/sale'
 import {
@@ -20,6 +22,7 @@ import {
 type LoadState = 'loading' | 'success' | 'error'
 
 interface SaleItemDraft {
+  productId?: number
   key: number
   description: string
   quantity: string
@@ -72,6 +75,48 @@ export function SalesPage() {
   const [formError, setFormError] = useState<string | null>(null)
   const [notice, setNotice] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [products, setProducts] = useState<Product[]>([])
+  const [productSearch, setProductSearch] = useState('')
+  const [productError, setProductError] = useState<string | null>(null)
+  const [productsLoading, setProductsLoading] = useState(true)
+  const searchInput = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    const controller = new AbortController()
+    getProducts(controller.signal).then(setProducts).catch((error: unknown) => {
+      if (!controller.signal.aborted) setProductError(error instanceof ApiError ? error.message : 'Não foi possível carregar os produtos.')
+    }).finally(() => { if (!controller.signal.aborted) setProductsLoading(false) })
+    return () => controller.abort()
+  }, [])
+
+  async function refreshProducts() {
+    setProductsLoading(true); setProductError(null)
+    try {
+      const latest = await getProducts()
+      setProducts(latest)
+      setItems((current) => current.map((item) => {
+        const product = latest.find((p) => p.id === item.productId)
+        return product ? { ...item, description: product.descricao, unitAmount: formatCurrencyInput(String(Math.round(product.valor_venda * 100))) } : item
+      }))
+    } catch (error) { setProductError(error instanceof ApiError ? error.message : 'Não foi possível atualizar os produtos.') }
+    finally { setProductsLoading(false) }
+  }
+
+  function addProduct(product: Product) {
+    setFormError(null)
+    const existing = items.find((item) => item.productId === product.id)
+    const currentQuantity = existing ? Number(existing.quantity) : 0
+    if (currentQuantity + 1 > product.quantidade_estoque) {
+      setFormError('Estoque insuficiente para ' + product.descricao + '.'); return
+    }
+    setItems((current) => existing
+      ? current.map((item) => item.productId === product.id ? { ...item, quantity: String(currentQuantity + 1) } : item)
+      : [...current.filter((item) => item.productId || item.description.trim() || item.unitAmount), {
+        key: nextItemKey.current++, productId: product.id, description: product.descricao, quantity: '1',
+        unitAmount: formatCurrencyInput(String(Math.round(product.valor_venda * 100))),
+      }])
+    setProductSearch(''); searchInput.current?.focus()
+  }
 
   const loadData = useCallback(async () => {
     try {
@@ -154,8 +199,14 @@ export function SalesPage() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    if (isSubmitting) return
     setFormError(null)
     setNotice(null)
+
+    if (productsLoading && items.some((item) => item.productId)) {
+      setFormError('Aguarde a atualização dos produtos antes de registrar a venda.')
+      return
+    }
 
     const selectedCustomerId = customerId ? Number(customerId) : null
 
@@ -173,6 +224,7 @@ export function SalesPage() {
     }
 
     const normalizedItems: CreateSaleItemInput[] = items.map((item) => ({
+      produto_id: item.productId,
       descricao: item.description.trim(),
       quantidade: Number(item.quantity),
       valor_unitario: currencyInputToNumber(item.unitAmount),
@@ -216,6 +268,15 @@ export function SalesPage() {
     }
 
     const normalizedPaymentMethod = paymentMethod.trim()
+    for (const item of normalizedItems) {
+      if (item.produto_id) {
+        const product = products.find((p) => p.id === item.produto_id)
+        if (!product || item.quantidade > product.quantidade_estoque) {
+          setFormError('Estoque insuficiente para ' + item.descricao + '. Atualize os produtos e revise a quantidade.')
+          return
+        }
+      }
+    }
 
     if (!normalizedPaymentMethod) {
       setFormError('Informe a forma de pagamento.')
@@ -233,6 +294,7 @@ export function SalesPage() {
       setSales((currentSales) => [createdSale, ...currentSales])
       setNotice('Venda #' + createdSale.id + ' registrada com sucesso.')
       resetForm()
+      void refreshProducts()
     } catch (requestError) {
       setFormError(
         requestError instanceof ApiError
@@ -252,6 +314,9 @@ export function SalesPage() {
     0,
   )
   const saleCountLabel = getSaleCountLabel(sales.length)
+  const matchingProducts = productSearch.trim() ? products.filter((p) =>
+    p.codigo_barras.includes(productSearch.trim()) || p.descricao.toLocaleLowerCase('pt-BR').includes(productSearch.trim().toLocaleLowerCase('pt-BR')),
+  ).slice(0, 15) : []
 
   return (
     <section className="sales-page">
@@ -287,6 +352,22 @@ export function SalesPage() {
           </div>
 
           <form className="sales-form" onSubmit={handleSubmit}>
+            <section className="sale-product-picker">
+              <div className="form-field"><label htmlFor="sale-product-search">Buscar produto por código de barras ou descrição</label>
+                <input id="sale-product-search" ref={searchInput} value={productSearch} autoComplete="off" disabled={isSubmitting || productsLoading} onChange={(e) => setProductSearch(e.target.value)} onKeyDown={(e) => {
+                  if (e.key !== 'Enter') return
+                  e.preventDefault()
+                  const product = products.find((p) => p.codigo_barras === productSearch.trim())
+                  if (product) addProduct(product)
+                  else setFormError('Código não encontrado. Selecione um produto nos resultados.')
+                }} placeholder={productsLoading ? 'Carregando produtos...' : 'Digite a descrição ou leia o código'} />
+                <span className="field-help">Leitura do código seguida de Enter adiciona o produto. Uma nova leitura aumenta a quantidade.</span>
+              </div>
+              <button className="retry-button" type="button" disabled={isSubmitting || productsLoading} onClick={() => void refreshProducts()}>Atualizar produtos e preços</button>
+              {productError && <p className="form-error" role="alert">{productError}</p>}
+              {!productsLoading && !productError && products.length === 0 && <p className="field-help">Nenhum produto cadastrado. O empresário pode cadastrar os produtos em Estoque.</p>}
+              {productSearch.trim() && <div className="sale-product-results">{matchingProducts.length ? matchingProducts.map((p) => <button type="button" key={p.id} disabled={isSubmitting || productsLoading || p.quantidade_estoque === 0} onClick={() => addProduct(p)}><span><strong>{p.descricao}</strong><small>{p.codigo_barras} · Estoque: {p.quantidade_estoque}</small></span><strong>{formatCurrency(p.valor_venda)}</strong></button>) : <p>Nenhum produto encontrado.</p>}</div>}
+            </section>
             <div className="sales-form-grid">
               <div className="form-field">
                 <label htmlFor="sale-customer">Cliente</label>
@@ -344,7 +425,7 @@ export function SalesPage() {
                   disabled={isSubmitting}
                 >
                   <span aria-hidden="true">+</span>
-                  Adicionar item
+                  Adicionar item avulso
                 </button>
               </div>
 
@@ -379,7 +460,7 @@ export function SalesPage() {
                             )
                           }
                           placeholder="Produto vendido"
-                          disabled={isSubmitting}
+                          disabled={isSubmitting || !!item.productId}
                           required
                         />
                       </div>
@@ -392,6 +473,7 @@ export function SalesPage() {
                           id={'sale-item-quantity-' + item.key}
                           type="number"
                           min="1"
+                          max={item.productId ? products.find((p) => p.id === item.productId)?.quantidade_estoque : undefined}
                           step="1"
                           inputMode="numeric"
                           value={item.quantity}
@@ -425,7 +507,7 @@ export function SalesPage() {
                             }
                             placeholder="0,00"
                             inputMode="numeric"
-                            disabled={isSubmitting}
+                            disabled={isSubmitting || !!item.productId}
                             required
                           />
                         </div>

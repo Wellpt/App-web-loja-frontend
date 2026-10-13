@@ -15,6 +15,7 @@ const navigation: NavigationItem[] = [
   { to: '/clientes', label: 'Clientes', end: false },
   { to: '/vendas', label: 'Vendas', end: false },
   { to: '/ordens', label: 'Ordens de serviço', end: false },
+  { to: '/estoque', label: 'Estoque', end: false, allowedProfiles: ['empresario'] },
   {
     to: '/balancos',
     label: 'Balanços',

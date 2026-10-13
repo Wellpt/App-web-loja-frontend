@@ -621,6 +621,32 @@ a {
   text-decoration: none;
 }
 
+@media (min-width: 901px) {
+  .dashboard-panel > div {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .dashboard-panel .quick-links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    flex: 1;
+    min-width: 0;
+  }
+
+  .dashboard-panel .quick-links a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    overflow-wrap: anywhere;
+  }
+
+  .dashboard-panel .quick-links a:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}
+
 .coming-soon-page {
   display: grid;
   min-height: calc(100vh - 200px);
@@ -3652,6 +3678,27 @@ a {
     minmax(130px, 0.42fr);
   align-items: end;
   gap: 14px;
+}
+
+@media (min-width: 921px) {
+  .sale-item-grid {
+    grid-template-columns: minmax(0, 0.65fr) repeat(2, minmax(0, 1fr));
+  }
+
+  .sale-item-description {
+    grid-column: 1 / -1;
+  }
+
+  .sale-item-grid > *,
+  .sale-item-grid input,
+  .sale-item-grid .currency-field {
+    min-width: 0;
+  }
+
+  .sale-item-grid .sale-item-subtotal strong {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
 }
 
 .sale-item-subtotal {
