@@ -9,6 +9,7 @@ import { EmployeesPage } from '../pages/EmployeesPage'
 import { LoginPage } from '../pages/LoginPage'
 import { OrdersPage } from '../pages/OrdersPage'
 import { SalesPage } from '../pages/SalesPage'
+import { InventoryPage } from '../pages/InventoryPage'
 
 const routerBaseName = import.meta.env.BASE_URL.replace(/\/$/, '') || '/'
 
@@ -33,6 +34,7 @@ export function AppRoutes() {
               }
             >
               <Route path="/balancos" element={<BalancesPage />} />
+              <Route path="/estoque" element={<InventoryPage />} />
               <Route path="/funcionarios" element={<EmployeesPage />} />
             </Route>
           </Route>

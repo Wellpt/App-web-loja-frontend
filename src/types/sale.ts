@@ -9,6 +9,7 @@ export interface SaleEmployee {
 }
 
 export interface SaleItem {
+  produto_id: number | null
   id: number
   descricao: string
   quantidade: number
@@ -28,6 +29,7 @@ export interface Sale {
 }
 
 export interface CreateSaleItemInput {
+  produto_id?: number
   descricao: string
   quantidade: number
   valor_unitario: number

@@ -82,6 +82,18 @@ src/
 
 ## Escopo atual
 
+A US18 adiciona o módulo de estoque:
+
+- cadastro e edição de produtos pelo empresário;
+- código de barras, descrição, quantidade inicial, custo, percentual individual e preço calculado;
+- reposições e ajustes de estoque com motivo;
+- seleção de produtos na venda, com baixa automática confirmada pela API;
+- busca por descrição ou código de barras, preparada para leitores em modo teclado;
+- preservação dos itens avulsos e das vendas antigas;
+- backend US24 e migração `000009` obrigatórios antes da publicação do frontend.
+
+Detalhes: [US18 — Estoque](docs/us18-product-inventory.md).
+
 A US01 estabelece a fundação do frontend:
 
 - React, TypeScript e Vite
