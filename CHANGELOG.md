@@ -6,6 +6,10 @@ implementação e revisão.
 
 ## 2026-10-11 — US18 — Produtos e estoque
 
+- Reduzidos os espaços verticais do login em desktop com até 800px de altura, preservando o layout mobile e a rolagem quando necessária para acessar o conteúdo.
+
+- Menu lateral mais compacto em janelas de até 700px e 550px de altura para manter a conta e o botão Sair visíveis, sem adicionar rolagem ao menu.
+
 - Ajustes pontuais posteriores no desktop: atalhos em duas colunas com último acesso ímpar na linha inteira; descrição da venda em linha própria para manter quantidade, valor unitário e subtotal dentro do cartão. Mantidas as regras anteriores de telas menores.
 
 - Restaurados os estilos globais anteriores à feature, com exceção dos dois ajustes pontuais de desktop descritos acima. Novos componentes de estoque e busca possuem estilos próprios.
