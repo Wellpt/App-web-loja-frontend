@@ -1,0 +1,21 @@
+.quotes-page { display: grid; gap: 24px; min-width: 0; }
+.quotes-page .sales-form-card, .quotes-page .sales-list-card { min-width: 0; }
+.quotes-fields { border: 0; padding: 0; margin: 0; min-width: 0; display: grid; gap: 24px; }
+.quotes-page .sales-form { scroll-margin-top: 120px; }
+.quotes-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.quotes-actions .cancel-button, .quotes-actions .submit-button { margin: 0; min-height: 46px; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+.quotes-list { display: grid; gap: 20px; padding: 26px; }
+.quote-item { border: 1px solid var(--color-border, #dce5df); border-radius: 16px; padding: 22px; min-width: 0; }
+.quote-item-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.quote-item-heading h3 { margin: 0; overflow-wrap: anywhere; }
+.quote-status { color: #1d4937; background: #eef6f1; border-radius: 8px; padding: 8px 12px; font-size: .85rem; }
+.quote-description { white-space: pre-wrap; overflow-wrap: anywhere; }
+.quote-details { display: flex; flex-wrap: wrap; gap: 20px 32px; margin: 20px 0; }
+.quote-details dt { font-size: .85rem; color: #65766f; }
+.quote-details dd { margin: 6px 0 0; font-weight: 600; }
+.quotes-error { padding: 16px; border-radius: 12px; color: #a52727; background: #fff1f1; overflow-wrap: anywhere; }
+@media (max-width: 620px) {
+  .quotes-list { padding: 18px; }
+  .quote-item { padding: 16px; }
+  .quotes-page .sales-card-header { flex-wrap: wrap; gap: 12px; }
+}

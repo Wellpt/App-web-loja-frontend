@@ -28,6 +28,7 @@ export function AppRoutes() {
             />
             <Route path="/vendas" element={<SalesPage />} />
             <Route path="/ordens" element={<OrdersPage />} />
+            <Route path="/orcamentos" element={<p role="status">Funcionalidade exclusiva do plano Premium.</p>} />
             <Route
               element={
                 <ProfileProtectedRoute allowedProfiles={['empresario']} />

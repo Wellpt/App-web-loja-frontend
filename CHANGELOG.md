@@ -1,5 +1,15 @@
 # Histórico de alterações
 
+## 2026-10-21 — Orçamentos
+
+- Disponibilidade reservada ao Premium: último item do menu desabilitado, aviso ao passar o mouse ou focar, e tela de aviso no acesso direto enquanto o contrato de plano não está disponível.
+
+- Novo menu e página para empresário e funcionário, com cadastro, edição, busca e filtro por situação.
+- Impressão de orçamento com dados do cliente, serviço e total, sem custo interno dos materiais.
+- Conversão confirmada em OS aberta, usando revisão da API e atualização da lista em conflitos.
+- Estilos restritos aos componentes de orçamentos; preservados os estilos globais existentes.
+- Documentados contratos, roteiro de validação e integração em `release/20261021`.
+
 Este arquivo registra as mudanças funcionais e operacionais relevantes do
 frontend. Os commits e pull requests permanecem como fonte dos detalhes de
 implementação e revisão.

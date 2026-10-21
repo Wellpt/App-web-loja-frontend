@@ -1,5 +1,10 @@
 # Contratos consumidos pelo frontend
 
+## Orçamentos (2026-10-21)
+
+Empresário e funcionário podem cadastrar, listar, editar orçamentos pendentes e converter em OS.
+Contratos de `/quotes`, revisão, impressão e tratamento de conflitos documentados em [service-quotes.md](service-quotes.md).
+
 Última atualização: 2026-10-11.
 
 Este documento registra os contratos que orientam a integração do frontend da
