@@ -1,5 +1,15 @@
 # Histórico de alterações
 
+## 2026-10-21 — Despesas
+
+- Após validação funcional pelo responsável, módulo reservado ao Premium: último item do menu apagado, sem clique e com aviso; acesso direto bloqueado. Lembretes e resumo financeiro de despesas aguardam liberação. Controle de assinatura no backend fica para outra US.
+
+- Tela exclusiva do empresário com cadastro por vencimento, consulta, busca, filtros e edição de contas pendentes, sem categoria.
+- Registro separado de pagamento com confirmação e data real, usando revisão para tratar conflitos.
+- Lembretes na Visão geral e em Despesas desde cinco dias antes do vencimento, incluindo atrasos; atualizados na mudança do dia de São Paulo, ao retornar à aba e após operações.
+- Balanços atuais e históricos apresentam despesas pagas e resultado líquido, preservando o faturamento bruto.
+- Estilos específicos do módulo e documentação de contratos/validação; integração destinada à `release/20261021`.
+
 ## 2026-10-21 — Orçamentos
 
 - Disponibilidade reservada ao Premium: último item do menu desabilitado, aviso ao passar o mouse ou focar, e tela de aviso no acesso direto enquanto o contrato de plano não está disponível.

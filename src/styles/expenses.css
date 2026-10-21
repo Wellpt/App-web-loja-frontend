@@ -1,0 +1,38 @@
+.expenses-page { display: grid; gap: 24px; min-width: 0; }
+.expenses-page .sales-form-card, .expenses-page .sales-list-card { min-width: 0; }
+.expenses-page .sales-form { scroll-margin-top: 120px; }
+.expense-fields { display: grid; gap: 24px; min-width: 0; margin: 0; padding: 0; border: 0; }
+.expense-actions, .expense-heading { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+.expense-heading { justify-content: space-between; }
+.expense-heading h3 { margin: 0; }
+.expense-actions .submit-button, .expense-actions .cancel-button, .expense-alerts .cancel-button { display: inline-flex; align-items: center; justify-content: center; min-height: 46px; margin: 0; text-decoration: none; }
+.expense-list { display: grid; gap: 20px; padding: 26px; }
+.expense-item { border: 1px solid #dce5df; border-radius: 16px; padding: 22px; min-width: 0; }
+.expense-description { white-space: pre-wrap; overflow-wrap: anywhere; }
+.expense-details { display: flex; flex-wrap: wrap; gap: 20px 32px; margin: 20px 0; }
+.expense-details dt { font-size: .85rem; color: #65766f; }
+.expense-details dd { margin: 6px 0 0; font-weight: 600; }
+.expense-status { padding: 8px 12px; border-radius: 8px; font-size: .85rem; background: #f4f1e5; color: #6b541a; }
+.expense-status.is-paga { background: #eef6f1; color: #1d4937; }
+.expense-status.is-atrasada, .expense-feedback { background: #fff1f1; color: #a52727; }
+.expense-feedback { padding: 16px; border-radius: 12px; overflow-wrap: anywhere; }
+.expense-alerts { border: 1px solid #ded7b3; background: #fffdf3; color: #514820; padding: 20px; border-radius: 16px; min-width: 0; }
+.expense-alerts ul { padding: 0; margin: 16px 0 0; list-style: none; display: grid; gap: 12px; }
+.expense-alerts li { display: grid; gap: 4px; overflow-wrap: anywhere; }
+.expense-alerts li span { font-size: .85rem; }
+.expense-due-reminder { color: #8a4e11; font-weight: 600; }
+.expense-payment-dialog { width: min(560px, calc(100% - 32px)); max-height: calc(100dvh - 32px); border: 1px solid #dce5df; border-radius: 20px; padding: 26px; color: #173a2c; }
+.expense-payment-dialog::backdrop { background: #102d2199; }
+.expense-payment-dialog form { display: grid; gap: 18px; min-width: 0; }
+.expense-payment-dialog h2, .expense-payment-dialog p { margin: 0; }
+.expense-payment-dialog input { min-width: 0; }
+.expense-financial-summary { border-top: 1px solid #dce5df; padding-top: 18px; display: grid; gap: 12px; }
+.expense-financial-summary > div { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px; }
+.expense-financial-summary dd { margin: 0; font-weight: 700; overflow-wrap: anywhere; }
+.expense-negative { color: #a52727; }
+@media (max-width: 620px) {
+  .expense-list { padding: 18px; }
+  .expense-item, .expense-alerts { padding: 16px; }
+  .expense-payment-dialog { padding: 20px; }
+  .expenses-page .sales-card-header { flex-wrap: wrap; gap: 12px; }
+}

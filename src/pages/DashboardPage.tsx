@@ -5,6 +5,8 @@ import { getCustomers } from '../api/customers'
 import { ApiError } from '../api/http'
 import { getServiceOrders } from '../api/serviceOrders'
 import { useAuth } from '../hooks/useAuth'
+import { ExpenseAlerts } from '../components/ExpenseAlerts'
+import { expensesEnabled } from '../config/features'
 import type { BalanceSummary } from '../types/balance'
 import { formatCurrency } from '../utils/formatters'
 
@@ -266,6 +268,8 @@ export function DashboardPage() {
           </article>
         ))}
       </div>
+
+      {isOwner && expensesEnabled && <ExpenseAlerts />}
 
       <section className="dashboard-panel">
         <div>

@@ -3,6 +3,7 @@ import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import type { EmployeeProfile } from '../types/auth'
 import '../styles/premium-navigation.css'
+import { expensesEnabled } from '../config/features'
 
 interface NavigationItem {
   to: string
@@ -31,6 +32,7 @@ const navigation: NavigationItem[] = [
     allowedProfiles: ['empresario'],
   },
   { to: '/orcamentos', label: 'Orçamentos', end: false, premiumOnly: true },
+  { to: '/despesas', label: 'Despesas', end: false, allowedProfiles: ['empresario'], premiumOnly: !expensesEnabled },
 ]
 
 function getProfileLabel(profile?: EmployeeProfile): string {

@@ -9,6 +9,9 @@ export interface Balance {
   quantidade_vendas: number
   valor_vendas: number
   valor_total: number
+  quantidade_despesas: number
+  valor_despesas: number
+  valor_liquido: number
 }
 
 export interface BalanceSummary {
