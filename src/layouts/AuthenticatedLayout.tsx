@@ -2,12 +2,15 @@ import { useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import type { EmployeeProfile } from '../types/auth'
+import '../styles/premium-navigation.css'
+import { expensesEnabled } from '../config/features'
 
 interface NavigationItem {
   to: string
   label: string
   end: boolean
   allowedProfiles?: EmployeeProfile[]
+  premiumOnly?: boolean
 }
 
 const navigation: NavigationItem[] = [
@@ -28,6 +31,8 @@ const navigation: NavigationItem[] = [
     end: false,
     allowedProfiles: ['empresario'],
   },
+  { to: '/orcamentos', label: 'Orçamentos', end: false, premiumOnly: true },
+  { to: '/despesas', label: 'Despesas', end: false, allowedProfiles: ['empresario'], premiumOnly: !expensesEnabled },
 ]
 
 function getProfileLabel(profile?: EmployeeProfile): string {
@@ -100,7 +105,21 @@ export function AuthenticatedLayout() {
 
         <nav className="sidebar-nav" aria-label="Navegação principal">
           <p className="sidebar-section-label">Menu principal</p>
-          {visibleNavigation.map((item, index) => (
+          {visibleNavigation.map((item, index) => item.premiumOnly ? (
+            <span
+              key={item.to}
+              className="sidebar-link sidebar-premium"
+              role="link"
+              aria-disabled="true"
+              aria-label={`${item.label}: Funcionalidade exclusiva do plano Premium.`}
+              tabIndex={0}
+              title="Funcionalidade exclusiva do plano Premium."
+            >
+              <span className="nav-index">{String(index + 1).padStart(2, '0')}</span>
+              <span>{item.label}</span>
+              <span className="sidebar-premium-tooltip" aria-hidden="true">Funcionalidade exclusiva do plano Premium.</span>
+            </span>
+          ) : (
             <NavLink
               key={item.to}
               to={item.to}

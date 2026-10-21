@@ -1,0 +1,27 @@
+.sidebar-link.sidebar-premium {
+  position: relative;
+  cursor: not-allowed;
+  color: #94a49d;
+  background: transparent;
+}
+
+.sidebar-premium > .nav-index,
+.sidebar-premium > span:nth-child(2) { opacity: .5; }
+
+.sidebar-premium-tooltip {
+  display: none;
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  z-index: 10;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #fff;
+  color: #173a2c;
+  font-size: 12px;
+  line-height: 1.4;
+  box-shadow: 0 2px 12px #0002;
+}
+
+.sidebar-premium:hover .sidebar-premium-tooltip,
+.sidebar-premium:focus .sidebar-premium-tooltip { display: block; }
