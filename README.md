@@ -2,7 +2,12 @@
 
 Frontend da aplicação VTcell, criado com React, TypeScript e Vite.
 
-## Requisitos
+## Módulo de orçamentos
+
+Cadastro, edição, impressão e conversão em OS disponíveis em `/orcamentos`.
+Contrato, pré-requisitos de publicação e roteiro de testes em [docs/service-quotes.md](docs/service-quotes.md).
+
+## Requisitos do ambiente
 
 - Node.js na versão LTS
 - npm
