@@ -10,6 +10,8 @@ import { LoginPage } from '../pages/LoginPage'
 import { OrdersPage } from '../pages/OrdersPage'
 import { SalesPage } from '../pages/SalesPage'
 import { InventoryPage } from '../pages/InventoryPage'
+import { ExpensesPage } from '../pages/ExpensesPage'
+import { expensesEnabled } from '../config/features'
 
 const routerBaseName = import.meta.env.BASE_URL.replace(/\/$/, '') || '/'
 
@@ -35,6 +37,7 @@ export function AppRoutes() {
               }
             >
               <Route path="/balancos" element={<BalancesPage />} />
+              <Route path="/despesas" element={expensesEnabled ? <ExpensesPage /> : <p role="status">Funcionalidade exclusiva do plano Premium.</p>} />
               <Route path="/estoque" element={<InventoryPage />} />
               <Route path="/funcionarios" element={<EmployeesPage />} />
             </Route>

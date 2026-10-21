@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import { getBalances, getMonthlyBalance } from '../api/balances'
 import { ApiError } from '../api/http'
+import { ExpenseBalanceSummary } from '../components/ExpenseBalanceSummary'
+import { expensesEnabled } from '../config/features'
 import type {
   Balance,
   BalancePeriod,
@@ -221,7 +223,7 @@ export function BalancesPage() {
         <div>
           <p className="eyebrow">Financeiro</p>
           <h2>Balanços</h2>
-          <p>Consulte o faturamento recebido em serviços e vendas.</p>
+          <p>{expensesEnabled ? 'Consulte o faturamento, as despesas pagas e o resultado líquido.' : 'Consulte o faturamento recebido em serviços e vendas.'}</p>
         </div>
         <button
           className="secondary-action"
@@ -302,6 +304,8 @@ export function BalancesPage() {
                     <small>{getSaleCountLabel(balance.quantidade_vendas)}</small>
                   </div>
                 </div>
+
+                {expensesEnabled && <ExpenseBalanceSummary balance={balance} />}
 
                 <div className="balance-card-footer">
                   <span>Receitas confirmadas</span>
@@ -406,6 +410,8 @@ export function BalancesPage() {
               <strong>{formatCurrency(monthlyBalance.valor_total)}</strong>
             </div>
 
+            {expensesEnabled && <ExpenseBalanceSummary balance={monthlyBalance} />}
+
             <div className="monthly-history-breakdown">
               <div>
                 <span className="balance-breakdown-label">
@@ -438,11 +444,12 @@ export function BalancesPage() {
             i
           </div>
           <div>
-            <strong>Como o faturamento é calculado?</strong>
+            <strong>{expensesEnabled ? 'Como o resultado é calculado?' : 'Como o faturamento é calculado?'}</strong>
             <p>
               Ordens entram após a conclusão e vendas no momento do cadastro.
-              Custos de materiais e mão de obra não são descontados. Os
-              períodos seguem o fuso horário de São Paulo.
+              {expensesEnabled && ' O resultado líquido desconta as despesas registradas como pagas, pela data do pagamento. Contas pendentes não são descontadas. '}
+              Custos de materiais não são deduzidos automaticamente.
+              Os períodos seguem o fuso horário de São Paulo.
             </p>
           </div>
           {updatedAt && (
