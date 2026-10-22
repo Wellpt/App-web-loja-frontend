@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
+import { BrandLogo } from '../components/BrandLogo'
 import type { EmployeeProfile } from '../types/auth'
 import '../styles/premium-navigation.css'
 import { expensesEnabled } from '../config/features'
@@ -87,10 +88,7 @@ export function AuthenticatedLayout() {
       >
         <div className="sidebar-header">
           <div className="brand sidebar-brand">
-            <span className="brand-mark" aria-hidden="true">
-              VT
-            </span>
-            <span>VTcell</span>
+            <BrandLogo variant="dark" />
           </div>
 
           <button
@@ -172,7 +170,7 @@ export function AuthenticatedLayout() {
           </button>
 
           <div>
-            <p className="topbar-label">VTcell</p>
+            <div className="topbar-label"><BrandLogo /></div>
             <h1>{currentPage}</h1>
           </div>
 

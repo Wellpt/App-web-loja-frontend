@@ -1,4 +1,5 @@
 import { createPortal } from 'react-dom'
+import { BrandLogo } from './BrandLogo'
 import type { Quote } from '../types/quote'
 import type { Customer } from '../types/customer'
 import { formatCurrency, formatDateTime, formatPhone } from '../utils/formatters'
@@ -7,7 +8,7 @@ export function QuotePrint({ quote, customer }: { quote: Quote; customer?: Custo
   return createPortal(
     <article className="service-order-print">
       <header className="print-header">
-        <div className="print-brand"><span>VT</span><div><strong>VTcell</strong><small>Orçamento de serviço</small></div></div>
+        <div className="print-brand"><BrandLogo variant="print" /></div>
         <div className="print-order-number"><span>Orçamento</span><strong>#{quote.id}</strong></div>
       </header>
       <section className="print-title">

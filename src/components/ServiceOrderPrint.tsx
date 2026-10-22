@@ -1,4 +1,5 @@
 import { createPortal } from 'react-dom'
+import { BrandLogo } from './BrandLogo'
 import type { Customer } from '../types/customer'
 import type { ServiceOrder } from '../types/serviceOrder'
 import {
@@ -28,11 +29,7 @@ export function ServiceOrderPrint({
     <article className="service-order-print">
       <header className="print-header">
         <div className="print-brand">
-          <span aria-hidden="true">VT</span>
-          <div>
-            <strong>VTcell</strong>
-            <small>Documento de acompanhamento do serviço</small>
-          </div>
+          <BrandLogo variant="print" />
         </div>
         <div className="print-order-number">
           <span>Ordem de serviço</span>

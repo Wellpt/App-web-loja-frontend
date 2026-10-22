@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { ApiError } from '../api/http'
 import { useAuth } from '../hooks/useAuth'
+import { BrandLogo } from '../components/BrandLogo'
 
 interface LoginLocationState {
   from?: string
@@ -53,8 +54,7 @@ export function LoginPage() {
         aria-label={'Apresenta\u00e7\u00e3o'}
       >
         <div className="brand">
-          <span className="brand-mark" aria-hidden="true">VT</span>
-          <span>VTcell</span>
+          <BrandLogo variant="dark" />
         </div>
         <div className="login-hero-content">
           <p className="eyebrow">{'Gest\u00e3o de servi\u00e7os'}</p>

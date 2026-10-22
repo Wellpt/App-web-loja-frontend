@@ -1,5 +1,11 @@
 # Histórico de alterações
 
+## 2026-10-21 — Identidade visual VTcell
+
+- Aplicadas as imagens da marca no login, menu lateral, cabeçalho e ícone do navegador.
+- Incluída a versão monocromática nas impressões de orçamentos e ordens de serviço, aguardando o carregamento da imagem antes de abrir a impressão.
+- Caminhos compatíveis com a base do GitHub Pages e estilos limitados à marca.
+
 ## 2026-10-21 — Despesas
 
 - Após validação funcional pelo responsável, módulo reservado ao Premium: último item do menu apagado, sem clique e com aviso; acesso direto bloqueado. Lembretes e resumo financeiro de despesas aguardam liberação. Controle de assinatura no backend fica para outra US.

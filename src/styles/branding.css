@@ -1,0 +1,9 @@
+.vtcell-logo { display: block; object-fit: contain; object-position: left center; max-width: 100%; }
+.brand .vtcell-logo { width: 180px; height: 42px; }
+.sidebar-brand { min-width: 0; }
+.sidebar-brand .vtcell-logo { width: 160px; }
+.topbar-label .vtcell-logo { width: 90px; height: 20px; }
+.print-brand .vtcell-logo { width: 170px; height: 68px; }
+@media print {
+  .print-brand .vtcell-logo { width: 45mm; height: 18mm; }
+}
