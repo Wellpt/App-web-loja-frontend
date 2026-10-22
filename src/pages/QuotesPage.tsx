@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
+import { printWhenReady } from '../utils/printWhenReady'
 import { getCustomers } from '../api/customers'
 import { ApiError } from '../api/http'
 import { convertQuote, getQuotes, saveQuote } from '../api/quotes'
@@ -45,8 +46,8 @@ export function QuotesPage() {
     if (!printing) return
     const clear = () => setPrinting(undefined)
     window.addEventListener('afterprint', clear)
-    const frame = requestAnimationFrame(() => window.print())
-    return () => { cancelAnimationFrame(frame); window.removeEventListener('afterprint', clear) }
+    const cancelPrint = printWhenReady()
+    return () => { cancelPrint(); window.removeEventListener('afterprint', clear) }
   }, [printing])
 
   function refresh() {

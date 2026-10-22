@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { printWhenReady } from '../utils/printWhenReady'
 import { getCustomers } from '../api/customers'
 import { ApiError } from '../api/http'
 import { getServiceOrders } from '../api/serviceOrders'
@@ -109,10 +110,10 @@ export function OrdersPage() {
     }
 
     window.addEventListener('afterprint', handleAfterPrint)
-    const printFrame = window.requestAnimationFrame(() => window.print())
+    const cancelPrint = printWhenReady()
 
     return () => {
-      window.cancelAnimationFrame(printFrame)
+      cancelPrint()
       window.removeEventListener('afterprint', handleAfterPrint)
     }
   }, [orderToPrint])
